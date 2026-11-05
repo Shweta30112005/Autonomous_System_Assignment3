@@ -34,7 +34,7 @@ from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 from argumentation_framework import ArgumentationFramework, StrategicArgumentation
 
 
-DEFAULT_P_VALUES = (0.1, 0.2, 0.3, 0.4, 0.5)
+DEFAULT_P_VALUES = (0.15, 0.2, 0.25, 0.3, 0.35, 0.4)
 
 
 def generate_random_instance(

@@ -1,5 +1,10 @@
 """Argumentation engine for Assignment 3.
 
+Implements Dung-style abstract argumentation semantics and the grounded direct
+argumentation mechanism used in the strategic part of the assignment. The
+strategic concepts follow the course-assigned textbook: Gerhard Weiss (ed.),
+*Multiagent Systems*, Chapter 5, “Argumentation among Agents” (Iyad Rahwan).
+
 The strategic path checker below follows the project's original convention:
 it detects odd-length directed *walks* (vertices may be revisited). If the
 assigned statement of Theorem 5.4 defines a path as a simple path, that
@@ -8,7 +13,6 @@ interpretation must be changed consistently in the theorem checker and tests.
 
 from __future__ import annotations
 
-from collections import deque
 from itertools import combinations, product
 from typing import Dict, Iterable, Iterator, List, Mapping, Optional, Sequence, Set, Tuple
 
@@ -380,53 +384,66 @@ class StrategicArgumentation:
         return not counterexamples, counterexamples
 
     def has_odd_length_path(self, source: Argument, target: Argument) -> bool:
-        """Return whether an odd-length directed walk exists from source to target.
+        """Return whether a simple odd-length directed path exists.
 
-        Breadth-first search uses (vertex, parity) states. This terminates even
-        when the graph contains cycles, while correctly detecting odd walks
-        that revisit vertices. A length-zero walk is not considered odd.
+        A path may not repeat vertices (and therefore cannot repeat edges).
+        Length 1 is a direct defeat; odd lengths greater than 1 are indirect
+        defeats. A zero-length path is not a defeat, and no non-zero path from
+        a vertex to itself is accepted under this simple-path convention.
         """
         if source not in self.framework.arguments or target not in self.framework.arguments:
             raise ValueError("source and target must be arguments in the framework.")
 
-        queue = deque([(source, 0)])
-        visited = {(source, 0)}
-        while queue:
-            current, parity = queue.popleft()
-            next_parity = 1 - parity
-            for neighbour in self.framework.get_attacked(current):
-                if neighbour == target and next_parity == 1:
+        # Backtracking DFS enumerates only simple paths by keeping every
+        # vertex on the current path in `visited`. The search is finite because
+        # no vertex can be added twice to one path.
+        def search(current: Argument, length: int, visited: Set[Argument]) -> bool:
+            neighbours = self.framework.get_attacked(current)
+            for neighbour in neighbours:
+                if neighbour in visited:
+                    continue
+
+                next_length = length + 1
+                if neighbour == target:
+                    if next_length % 2 == 1:
+                        return True
+                    # A path ends when it reaches the target. Continuing past
+                    # the target and returning later would repeat that vertex.
+                    continue
+
+                visited.add(neighbour)
+                if search(neighbour, next_length, visited):
                     return True
-                state = (neighbour, next_parity)
-                if state not in visited:
-                    visited.add(state)
-                    queue.append(state)
-        return False
+                visited.remove(neighbour)
+
+            return False
+
+        return search(source, 0, {source})
 
     def check_theorem_5_4(self) -> Tuple[bool, List[str]]:
         """Check Theorem 5.4's no-direct-or-indirect-defeat condition.
 
-        Every ordered pair of arguments owned by the same agent is checked,
-        including a pair in which both arguments are the same. Under this
-        implementation's graph convention, an odd-length directed walk
-        represents a defeat: length 1 is a direct attack, while longer odd
-        lengths represent indirect defeats. An odd-length cycle can therefore
-        represent an indirect self-defeat. A zero-length walk is not a defeat.
+        For each agent, every ordered pair of distinct owned arguments is
+        checked. A defeat exists exactly when a simple directed path (no
+        repeated vertices or edges) of odd length connects the pair: length 1
+        is direct defeat, and lengths 3, 5, ... are indirect defeat. Even
+        lengths represent indirect defence and do not violate this condition.
 
-        The supplied textbook passage does not formally specify whether a
-        path may repeat vertices. The helper has_odd_length_path retains the
-        project's walk-based interpretation, in which vertices may repeat.
+        Since a simple path cannot repeat its starting vertex, a non-zero
+        self-defeating path from an argument back to itself is not considered.
         """
         violations: List[str] = []
         for agent in self.agents:
             owned = sorted(self.agent_arguments[agent])
             for alpha in owned:
                 for beta in owned:
+                    if alpha == beta:
+                        continue
                     if self.has_odd_length_path(alpha, beta):
-                        kind = "self-defeat" if alpha == beta else "defeat"
+                        kind = "direct defeat" if (alpha, beta) in self.framework.attacks else "indirect defeat"
                         violations.append(
-                            f"Agent {agent!r}: odd-length directed walk "
-                            f"({kind}) from {alpha!r} to {beta!r}."
+                            f"Agent {agent!r}: {kind} via an odd-length simple path "
+                            f"from {alpha!r} to {beta!r}."
                         )
         return not violations, violations
 

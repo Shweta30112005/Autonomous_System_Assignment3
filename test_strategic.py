@@ -3,10 +3,8 @@
 Run with:
     python -m unittest -v test_strategic
 
-The tests use the grounded direct argumentation mechanism and the project's
-current interpretation of an odd-length directed path as an odd-length walk
-(vertices may be revisited). If the course text defines paths as simple paths,
-the path-related tests and implementation must be adjusted together.
+The tests use the grounded direct argumentation mechanism. Theorem 5.4's
+path condition uses simple directed paths: vertices and edges cannot repeat.
 """
 
 import unittest
@@ -164,14 +162,14 @@ class TestTheorem54PathCondition(unittest.TestCase):
         self.assertFalse(self.chain.has_odd_length_path("a", "c"))
         self.assertFalse(self.chain.has_odd_length_path("b", "d"))
 
-    def test_zero_length_walk_is_not_odd(self):
+    def test_zero_length_path_is_not_odd(self):
         self.assertFalse(self.chain.has_odd_length_path("a", "a"))
 
     def test_unknown_path_endpoint_raises(self):
         with self.assertRaises(ValueError):
             self.chain.has_odd_length_path("a", "unknown")
 
-    def test_theorem_condition_reports_same_agent_odd_walks(self):
+    def test_theorem_condition_reports_same_agent_odd_paths(self):
         holds, violations = self.chain.check_theorem_5_4()
         self.assertFalse(holds)
         self.assertTrue(violations)
@@ -188,19 +186,19 @@ class TestTheorem54PathCondition(unittest.TestCase):
         self.assertTrue(holds)
         self.assertEqual(violations, [])
 
-    def test_cycle_can_create_an_odd_length_walk(self):
-        # In this directed 3-cycle, a -> c has a direct even-length walk
-        # (a -> b -> c), but also an odd-length walk that loops around the
-        # cycle before reaching c. This test documents the current walk-based
-        # convention; it is not a claim about simple paths.
+    def test_cycle_does_not_create_a_path_by_revisiting_vertices(self):
+        # In this directed 3-cycle, the only simple path from a to c is
+        # a -> b -> c (length 2). A longer odd walk would have to revisit
+        # vertices, so it must not count as an odd-length path.
         af = ArgumentationFramework(
             {"a", "b", "c"},
-            {("a", "b"), ("b", "c"), ("c", "a")},
+            {( "a", "b"), ("b", "c"), ("c", "a")},
         )
         strategic = StrategicArgumentation(
             af, {"Agent1": {"a", "c"}, "Agent2": {"b"}}
         )
-        self.assertTrue(strategic.has_odd_length_path("a", "c"))
+        self.assertFalse(strategic.has_odd_length_path("a", "c"))
+        self.assertFalse(strategic.has_odd_length_path("a", "a"))
 
 
 if __name__ == "__main__":

@@ -2,338 +2,8 @@
   "theorem_condition_holds_but_not_strategyproof": [],
   "strategyproof_but_theorem_condition_fails": [
     {
-      "index": 3,
-      "p": 0.1,
-      "num_arguments": 7,
-      "arguments": [
-        "a0",
-        "a1",
-        "a2",
-        "a3",
-        "a4",
-        "a5",
-        "a6"
-      ],
-      "attacks": [
-        [
-          "a1",
-          "a6"
-        ],
-        [
-          "a2",
-          "a0"
-        ],
-        [
-          "a2",
-          "a3"
-        ],
-        [
-          "a2",
-          "a5"
-        ],
-        [
-          "a2",
-          "a6"
-        ],
-        [
-          "a3",
-          "a0"
-        ],
-        [
-          "a4",
-          "a5"
-        ],
-        [
-          "a5",
-          "a3"
-        ],
-        [
-          "a5",
-          "a6"
-        ]
-      ],
-      "agent_arguments": {
-        "agent0": [
-          "a1",
-          "a2",
-          "a5",
-          "a6"
-        ],
-        "agent1": [
-          "a0",
-          "a3"
-        ],
-        "agent2": [
-          "a4"
-        ]
-      },
-      "theorem_violations": [
-        "Agent 'agent0': odd-length directed walk (defeat) from 'a1' to 'a6'.",
-        "Agent 'agent0': odd-length directed walk (defeat) from 'a2' to 'a5'.",
-        "Agent 'agent0': odd-length directed walk (defeat) from 'a2' to 'a6'.",
-        "Agent 'agent0': odd-length directed walk (defeat) from 'a5' to 'a6'.",
-        "Agent 'agent1': odd-length directed walk (defeat) from 'a3' to 'a0'."
-      ]
-    },
-    {
-      "index": 4,
-      "p": 0.1,
-      "num_arguments": 8,
-      "arguments": [
-        "a0",
-        "a1",
-        "a2",
-        "a3",
-        "a4",
-        "a5",
-        "a6",
-        "a7"
-      ],
-      "attacks": [
-        [
-          "a1",
-          "a1"
-        ],
-        [
-          "a3",
-          "a2"
-        ],
-        [
-          "a4",
-          "a0"
-        ],
-        [
-          "a6",
-          "a6"
-        ],
-        [
-          "a7",
-          "a2"
-        ]
-      ],
-      "agent_arguments": {
-        "agent0": [
-          "a2"
-        ],
-        "agent1": [
-          "a0",
-          "a1",
-          "a3",
-          "a6"
-        ],
-        "agent2": [
-          "a4",
-          "a5",
-          "a7"
-        ]
-      },
-      "theorem_violations": [
-        "Agent 'agent1': odd-length directed walk (self-defeat) from 'a1' to 'a1'.",
-        "Agent 'agent1': odd-length directed walk (self-defeat) from 'a6' to 'a6'."
-      ]
-    },
-    {
-      "index": 6,
-      "p": 0.1,
-      "num_arguments": 7,
-      "arguments": [
-        "a0",
-        "a1",
-        "a2",
-        "a3",
-        "a4",
-        "a5",
-        "a6"
-      ],
-      "attacks": [
-        [
-          "a0",
-          "a3"
-        ],
-        [
-          "a4",
-          "a1"
-        ],
-        [
-          "a5",
-          "a1"
-        ]
-      ],
-      "agent_arguments": {
-        "agent0": [
-          "a3"
-        ],
-        "agent1": [
-          "a0",
-          "a6"
-        ],
-        "agent2": [
-          "a1",
-          "a2",
-          "a4",
-          "a5"
-        ]
-      },
-      "theorem_violations": [
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a4' to 'a1'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a5' to 'a1'."
-      ]
-    },
-    {
-      "index": 8,
-      "p": 0.1,
-      "num_arguments": 8,
-      "arguments": [
-        "a0",
-        "a1",
-        "a2",
-        "a3",
-        "a4",
-        "a5",
-        "a6",
-        "a7"
-      ],
-      "attacks": [
-        [
-          "a1",
-          "a7"
-        ],
-        [
-          "a2",
-          "a7"
-        ],
-        [
-          "a3",
-          "a4"
-        ],
-        [
-          "a6",
-          "a7"
-        ]
-      ],
-      "agent_arguments": {
-        "agent0": [
-          "a3",
-          "a5"
-        ],
-        "agent1": [
-          "a0",
-          "a1",
-          "a2",
-          "a4"
-        ],
-        "agent2": [
-          "a6",
-          "a7"
-        ]
-      },
-      "theorem_violations": [
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a6' to 'a7'."
-      ]
-    },
-    {
-      "index": 9,
-      "p": 0.1,
-      "num_arguments": 6,
-      "arguments": [
-        "a0",
-        "a1",
-        "a2",
-        "a3",
-        "a4",
-        "a5"
-      ],
-      "attacks": [
-        [
-          "a1",
-          "a2"
-        ],
-        [
-          "a3",
-          "a5"
-        ],
-        [
-          "a4",
-          "a5"
-        ]
-      ],
-      "agent_arguments": {
-        "agent0": [
-          "a0",
-          "a2"
-        ],
-        "agent1": [
-          "a3",
-          "a5"
-        ],
-        "agent2": [
-          "a1",
-          "a4"
-        ]
-      },
-      "theorem_violations": [
-        "Agent 'agent1': odd-length directed walk (defeat) from 'a3' to 'a5'."
-      ]
-    },
-    {
-      "index": 10,
-      "p": 0.1,
-      "num_arguments": 8,
-      "arguments": [
-        "a0",
-        "a1",
-        "a2",
-        "a3",
-        "a4",
-        "a5",
-        "a6",
-        "a7"
-      ],
-      "attacks": [
-        [
-          "a2",
-          "a6"
-        ],
-        [
-          "a3",
-          "a4"
-        ],
-        [
-          "a4",
-          "a5"
-        ],
-        [
-          "a4",
-          "a7"
-        ],
-        [
-          "a5",
-          "a7"
-        ]
-      ],
-      "agent_arguments": {
-        "agent0": [
-          "a1",
-          "a2",
-          "a3"
-        ],
-        "agent1": [
-          "a5",
-          "a6"
-        ],
-        "agent2": [
-          "a0",
-          "a4",
-          "a7"
-        ]
-      },
-      "theorem_violations": [
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a4' to 'a7'."
-      ]
-    },
-    {
-      "index": 11,
-      "p": 0.1,
+      "index": 1,
+      "p": 0.15,
       "num_arguments": 8,
       "arguments": [
         "a0",
@@ -348,206 +18,43 @@
       "attacks": [
         [
           "a0",
-          "a7"
+          "a0"
         ],
         [
-          "a2",
-          "a5"
-        ],
-        [
-          "a3",
-          "a2"
-        ],
-        [
-          "a3",
-          "a4"
-        ],
-        [
-          "a6",
-          "a5"
-        ],
-        [
-          "a6",
-          "a6"
-        ]
-      ],
-      "agent_arguments": {
-        "agent0": [
-          "a3",
-          "a5",
-          "a7"
-        ],
-        "agent1": [
-          "a4"
-        ],
-        "agent2": [
           "a0",
-          "a1",
-          "a2",
-          "a6"
-        ]
-      },
-      "theorem_violations": [
-        "Agent 'agent2': odd-length directed walk (self-defeat) from 'a6' to 'a6'."
-      ]
-    },
-    {
-      "index": 14,
-      "p": 0.1,
-      "num_arguments": 8,
-      "arguments": [
-        "a0",
-        "a1",
-        "a2",
-        "a3",
-        "a4",
-        "a5",
-        "a6",
-        "a7"
-      ],
-      "attacks": [
-        [
-          "a1",
-          "a2"
-        ],
-        [
-          "a1",
           "a3"
         ],
         [
-          "a2",
+          "a0",
+          "a4"
+        ],
+        [
+          "a1",
+          "a0"
+        ],
+        [
+          "a1",
           "a1"
         ],
         [
-          "a2",
-          "a7"
+          "a3",
+          "a1"
+        ],
+        [
+          "a3",
+          "a6"
         ],
         [
           "a4",
           "a0"
         ],
         [
-          "a5",
-          "a1"
-        ]
-      ],
-      "agent_arguments": {
-        "agent0": [
-          "a3"
-        ],
-        "agent1": [
-          "a6",
-          "a7"
-        ],
-        "agent2": [
-          "a0",
-          "a1",
-          "a2",
           "a4",
-          "a5"
-        ]
-      },
-      "theorem_violations": [
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a1' to 'a2'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a2' to 'a1'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a4' to 'a0'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a5' to 'a1'."
-      ]
-    },
-    {
-      "index": 16,
-      "p": 0.1,
-      "num_arguments": 7,
-      "arguments": [
-        "a0",
-        "a1",
-        "a2",
-        "a3",
-        "a4",
-        "a5",
-        "a6"
-      ],
-      "attacks": [
-        [
-          "a0",
-          "a0"
-        ],
-        [
-          "a1",
-          "a3"
-        ],
-        [
-          "a2",
-          "a1"
-        ],
-        [
-          "a3",
-          "a3"
-        ],
-        [
-          "a5",
-          "a0"
-        ],
-        [
-          "a5",
-          "a4"
-        ],
-        [
-          "a6",
-          "a2"
-        ]
-      ],
-      "agent_arguments": {
-        "agent0": [
-          "a2",
-          "a3",
-          "a5"
-        ],
-        "agent1": [
-          "a0",
-          "a1",
-          "a4"
-        ],
-        "agent2": [
-          "a6"
-        ]
-      },
-      "theorem_violations": [
-        "Agent 'agent0': odd-length directed walk (defeat) from 'a2' to 'a3'.",
-        "Agent 'agent0': odd-length directed walk (self-defeat) from 'a3' to 'a3'.",
-        "Agent 'agent1': odd-length directed walk (self-defeat) from 'a0' to 'a0'."
-      ]
-    },
-    {
-      "index": 18,
-      "p": 0.1,
-      "num_arguments": 8,
-      "arguments": [
-        "a0",
-        "a1",
-        "a2",
-        "a3",
-        "a4",
-        "a5",
-        "a6",
-        "a7"
-      ],
-      "attacks": [
-        [
-          "a0",
           "a2"
         ],
         [
-          "a4",
-          "a7"
-        ],
-        [
           "a5",
           "a0"
-        ],
-        [
-          "a5",
-          "a5"
         ],
         [
           "a6",
@@ -557,306 +64,200 @@
       "agent_arguments": {
         "agent0": [
           "a0",
-          "a3"
+          "a1",
+          "a2",
+          "a6",
+          "a7"
         ],
         "agent1": [
-          "a1",
-          "a4"
-        ],
-        "agent2": [
-          "a2",
-          "a5",
-          "a6",
-          "a7"
-        ]
-      },
-      "theorem_violations": [
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a5' to 'a2'.",
-        "Agent 'agent2': odd-length directed walk (self-defeat) from 'a5' to 'a5'.",
-        "Agent 'agent2': odd-length directed walk (self-defeat) from 'a6' to 'a6'."
-      ]
-    },
-    {
-      "index": 19,
-      "p": 0.1,
-      "num_arguments": 8,
-      "arguments": [
-        "a0",
-        "a1",
-        "a2",
-        "a3",
-        "a4",
-        "a5",
-        "a6",
-        "a7"
-      ],
-      "attacks": [
-        [
-          "a0",
-          "a1"
-        ],
-        [
-          "a1",
-          "a1"
-        ],
-        [
-          "a1",
-          "a7"
-        ],
-        [
           "a3",
-          "a0"
-        ],
-        [
-          "a3",
-          "a1"
-        ],
-        [
-          "a5",
-          "a1"
-        ],
-        [
-          "a5",
-          "a4"
-        ],
-        [
-          "a6",
-          "a2"
-        ],
-        [
-          "a7",
-          "a2"
-        ],
-        [
-          "a7",
-          "a4"
-        ],
-        [
-          "a7",
-          "a5"
-        ]
-      ],
-      "agent_arguments": {
-        "agent0": [],
-        "agent1": [
-          "a1",
-          "a3",
-          "a6",
-          "a7"
-        ],
-        "agent2": [
-          "a0",
-          "a2",
           "a4",
           "a5"
-        ]
-      },
-      "theorem_violations": [
-        "Agent 'agent1': odd-length directed walk (self-defeat) from 'a1' to 'a1'.",
-        "Agent 'agent1': odd-length directed walk (defeat) from 'a1' to 'a7'.",
-        "Agent 'agent1': odd-length directed walk (defeat) from 'a3' to 'a1'.",
-        "Agent 'agent1': odd-length directed walk (defeat) from 'a3' to 'a7'.",
-        "Agent 'agent1': odd-length directed walk (defeat) from 'a7' to 'a1'.",
-        "Agent 'agent1': odd-length directed walk (self-defeat) from 'a7' to 'a7'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a0' to 'a2'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a0' to 'a4'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a0' to 'a5'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a5' to 'a2'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a5' to 'a4'.",
-        "Agent 'agent2': odd-length directed walk (self-defeat) from 'a5' to 'a5'."
-      ]
-    },
-    {
-      "index": 20,
-      "p": 0.1,
-      "num_arguments": 6,
-      "arguments": [
-        "a0",
-        "a1",
-        "a2",
-        "a3",
-        "a4",
-        "a5"
-      ],
-      "attacks": [
-        [
-          "a1",
-          "a5"
-        ],
-        [
-          "a2",
-          "a4"
-        ],
-        [
-          "a5",
-          "a0"
-        ]
-      ],
-      "agent_arguments": {
-        "agent0": [],
-        "agent1": [
-          "a5"
-        ],
-        "agent2": [
-          "a0",
-          "a1",
-          "a2",
-          "a3",
-          "a4"
-        ]
-      },
-      "theorem_violations": [
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a2' to 'a4'."
-      ]
-    },
-    {
-      "index": 21,
-      "p": 0.1,
-      "num_arguments": 8,
-      "arguments": [
-        "a0",
-        "a1",
-        "a2",
-        "a3",
-        "a4",
-        "a5",
-        "a6",
-        "a7"
-      ],
-      "attacks": [
-        [
-          "a0",
-          "a7"
-        ],
-        [
-          "a1",
-          "a1"
-        ],
-        [
-          "a1",
-          "a6"
-        ],
-        [
-          "a2",
-          "a4"
-        ],
-        [
-          "a3",
-          "a7"
-        ],
-        [
-          "a4",
-          "a1"
-        ],
-        [
-          "a5",
-          "a3"
-        ],
-        [
-          "a6",
-          "a6"
-        ],
-        [
-          "a7",
-          "a6"
-        ]
-      ],
-      "agent_arguments": {
-        "agent0": [
-          "a2"
-        ],
-        "agent1": [
-          "a1"
-        ],
-        "agent2": [
-          "a0",
-          "a3",
-          "a4",
-          "a5",
-          "a6",
-          "a7"
-        ]
-      },
-      "theorem_violations": [
-        "Agent 'agent1': odd-length directed walk (self-defeat) from 'a1' to 'a1'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a0' to 'a6'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a0' to 'a7'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a3' to 'a6'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a3' to 'a7'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a4' to 'a6'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a5' to 'a3'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a5' to 'a6'.",
-        "Agent 'agent2': odd-length directed walk (self-defeat) from 'a6' to 'a6'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a7' to 'a6'."
-      ]
-    },
-    {
-      "index": 23,
-      "p": 0.1,
-      "num_arguments": 7,
-      "arguments": [
-        "a0",
-        "a1",
-        "a2",
-        "a3",
-        "a4",
-        "a5",
-        "a6"
-      ],
-      "attacks": [
-        [
-          "a1",
-          "a1"
-        ],
-        [
-          "a2",
-          "a1"
-        ],
-        [
-          "a2",
-          "a6"
-        ],
-        [
-          "a4",
-          "a1"
-        ],
-        [
-          "a4",
-          "a4"
-        ],
-        [
-          "a5",
-          "a1"
-        ],
-        [
-          "a6",
-          "a2"
-        ]
-      ],
-      "agent_arguments": {
-        "agent0": [
-          "a1",
-          "a3",
-          "a5",
-          "a6"
-        ],
-        "agent1": [
-          "a0",
-          "a2",
-          "a4"
         ],
         "agent2": []
       },
       "theorem_violations": [
-        "Agent 'agent0': odd-length directed walk (self-defeat) from 'a1' to 'a1'.",
-        "Agent 'agent0': odd-length directed walk (defeat) from 'a5' to 'a1'.",
-        "Agent 'agent0': odd-length directed walk (defeat) from 'a6' to 'a1'.",
-        "Agent 'agent1': odd-length directed walk (self-defeat) from 'a4' to 'a4'."
+        "Agent 'agent0': direct defeat via an odd-length simple path from 'a1' to 'a0'.",
+        "Agent 'agent0': indirect defeat via an odd-length simple path from 'a1' to 'a2'.",
+        "Agent 'agent0': indirect defeat via an odd-length simple path from 'a1' to 'a6'.",
+        "Agent 'agent1': indirect defeat via an odd-length simple path from 'a3' to 'a4'."
       ]
     },
     {
-      "index": 24,
-      "p": 0.1,
+      "index": 4,
+      "p": 0.15,
+      "num_arguments": 8,
+      "arguments": [
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6",
+        "a7"
+      ],
+      "attacks": [
+        [
+          "a1",
+          "a1"
+        ],
+        [
+          "a3",
+          "a2"
+        ],
+        [
+          "a4",
+          "a0"
+        ],
+        [
+          "a4",
+          "a5"
+        ],
+        [
+          "a6",
+          "a6"
+        ],
+        [
+          "a7",
+          "a2"
+        ]
+      ],
+      "agent_arguments": {
+        "agent0": [
+          "a2"
+        ],
+        "agent1": [
+          "a0",
+          "a1",
+          "a3",
+          "a6"
+        ],
+        "agent2": [
+          "a4",
+          "a5",
+          "a7"
+        ]
+      },
+      "theorem_violations": [
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a4' to 'a5'."
+      ]
+    },
+    {
+      "index": 6,
+      "p": 0.15,
+      "num_arguments": 7,
+      "arguments": [
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6"
+      ],
+      "attacks": [
+        [
+          "a0",
+          "a3"
+        ],
+        [
+          "a2",
+          "a0"
+        ],
+        [
+          "a2",
+          "a5"
+        ],
+        [
+          "a4",
+          "a1"
+        ],
+        [
+          "a5",
+          "a1"
+        ],
+        [
+          "a6",
+          "a5"
+        ]
+      ],
+      "agent_arguments": {
+        "agent0": [
+          "a3"
+        ],
+        "agent1": [
+          "a0",
+          "a6"
+        ],
+        "agent2": [
+          "a1",
+          "a2",
+          "a4",
+          "a5"
+        ]
+      },
+      "theorem_violations": [
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a2' to 'a5'.",
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a4' to 'a1'.",
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a5' to 'a1'."
+      ]
+    },
+    {
+      "index": 8,
+      "p": 0.15,
+      "num_arguments": 8,
+      "arguments": [
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6",
+        "a7"
+      ],
+      "attacks": [
+        [
+          "a1",
+          "a7"
+        ],
+        [
+          "a2",
+          "a7"
+        ],
+        [
+          "a3",
+          "a4"
+        ],
+        [
+          "a6",
+          "a7"
+        ]
+      ],
+      "agent_arguments": {
+        "agent0": [
+          "a3",
+          "a5"
+        ],
+        "agent1": [
+          "a0",
+          "a1",
+          "a2",
+          "a4"
+        ],
+        "agent2": [
+          "a6",
+          "a7"
+        ]
+      },
+      "theorem_violations": [
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a6' to 'a7'."
+      ]
+    },
+    {
+      "index": 9,
+      "p": 0.15,
       "num_arguments": 6,
       "arguments": [
         "a0",
@@ -869,46 +270,55 @@
       "attacks": [
         [
           "a1",
-          "a0"
+          "a2"
         ],
         [
-          "a2",
-          "a3"
+          "a1",
+          "a4"
         ],
         [
-          "a2",
+          "a3",
+          "a1"
+        ],
+        [
+          "a3",
+          "a4"
+        ],
+        [
+          "a3",
           "a5"
         ],
         [
           "a4",
-          "a3"
+          "a5"
         ],
         [
           "a5",
-          "a5"
+          "a2"
         ]
       ],
       "agent_arguments": {
         "agent0": [
-          "a3"
+          "a0",
+          "a2"
         ],
         "agent1": [
-          "a1",
+          "a3",
           "a5"
         ],
         "agent2": [
-          "a0",
-          "a2",
+          "a1",
           "a4"
         ]
       },
       "theorem_violations": [
-        "Agent 'agent1': odd-length directed walk (self-defeat) from 'a5' to 'a5'."
+        "Agent 'agent1': direct defeat via an odd-length simple path from 'a3' to 'a5'.",
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a1' to 'a4'."
       ]
     },
     {
-      "index": 25,
-      "p": 0.1,
+      "index": 11,
+      "p": 0.15,
       "num_arguments": 8,
       "arguments": [
         "a0",
@@ -923,54 +333,337 @@
       "attacks": [
         [
           "a0",
-          "a5"
+          "a3"
+        ],
+        [
+          "a0",
+          "a7"
         ],
         [
           "a1",
-          "a6"
+          "a5"
         ],
         [
           "a2",
+          "a5"
+        ],
+        [
+          "a3",
           "a2"
         ],
         [
-          "a4",
-          "a0"
-        ],
-        [
-          "a6",
+          "a3",
           "a4"
         ],
         [
-          "a7",
-          "a2"
+          "a3",
+          "a5"
+        ],
+        [
+          "a4",
+          "a1"
+        ],
+        [
+          "a6",
+          "a5"
+        ],
+        [
+          "a6",
+          "a6"
         ]
       ],
       "agent_arguments": {
         "agent0": [
+          "a3",
           "a5",
           "a7"
         ],
         "agent1": [
-          "a1",
-          "a2",
-          "a3"
+          "a4"
         ],
         "agent2": [
           "a0",
-          "a4",
+          "a1",
+          "a2",
           "a6"
         ]
       },
       "theorem_violations": [
-        "Agent 'agent1': odd-length directed walk (self-defeat) from 'a2' to 'a2'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a4' to 'a0'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a6' to 'a4'."
+        "Agent 'agent0': direct defeat via an odd-length simple path from 'a3' to 'a5'.",
+        "Agent 'agent2': indirect defeat via an odd-length simple path from 'a0' to 'a1'."
+      ]
+    },
+    {
+      "index": 12,
+      "p": 0.15,
+      "num_arguments": 8,
+      "arguments": [
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6",
+        "a7"
+      ],
+      "attacks": [
+        [
+          "a0",
+          "a0"
+        ],
+        [
+          "a0",
+          "a2"
+        ],
+        [
+          "a0",
+          "a3"
+        ],
+        [
+          "a2",
+          "a3"
+        ],
+        [
+          "a3",
+          "a0"
+        ],
+        [
+          "a5",
+          "a0"
+        ],
+        [
+          "a5",
+          "a7"
+        ],
+        [
+          "a6",
+          "a0"
+        ],
+        [
+          "a6",
+          "a2"
+        ],
+        [
+          "a6",
+          "a6"
+        ],
+        [
+          "a7",
+          "a1"
+        ],
+        [
+          "a7",
+          "a6"
+        ]
+      ],
+      "agent_arguments": {
+        "agent0": [
+          "a0",
+          "a5",
+          "a6"
+        ],
+        "agent1": [
+          "a1",
+          "a2",
+          "a4"
+        ],
+        "agent2": [
+          "a3",
+          "a7"
+        ]
+      },
+      "theorem_violations": [
+        "Agent 'agent0': direct defeat via an odd-length simple path from 'a5' to 'a0'.",
+        "Agent 'agent0': direct defeat via an odd-length simple path from 'a6' to 'a0'.",
+        "Agent 'agent2': indirect defeat via an odd-length simple path from 'a7' to 'a3'."
+      ]
+    },
+    {
+      "index": 15,
+      "p": 0.15,
+      "num_arguments": 6,
+      "arguments": [
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5"
+      ],
+      "attacks": [
+        [
+          "a2",
+          "a3"
+        ],
+        [
+          "a3",
+          "a1"
+        ],
+        [
+          "a5",
+          "a1"
+        ],
+        [
+          "a5",
+          "a3"
+        ]
+      ],
+      "agent_arguments": {
+        "agent0": [
+          "a5"
+        ],
+        "agent1": [
+          "a2",
+          "a4"
+        ],
+        "agent2": [
+          "a0",
+          "a1",
+          "a3"
+        ]
+      },
+      "theorem_violations": [
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a3' to 'a1'."
+      ]
+    },
+    {
+      "index": 21,
+      "p": 0.15,
+      "num_arguments": 8,
+      "arguments": [
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6",
+        "a7"
+      ],
+      "attacks": [
+        [
+          "a0",
+          "a7"
+        ],
+        [
+          "a1",
+          "a1"
+        ],
+        [
+          "a1",
+          "a6"
+        ],
+        [
+          "a2",
+          "a4"
+        ],
+        [
+          "a3",
+          "a7"
+        ],
+        [
+          "a4",
+          "a1"
+        ],
+        [
+          "a5",
+          "a3"
+        ],
+        [
+          "a6",
+          "a6"
+        ],
+        [
+          "a7",
+          "a4"
+        ],
+        [
+          "a7",
+          "a6"
+        ]
+      ],
+      "agent_arguments": {
+        "agent0": [
+          "a2"
+        ],
+        "agent1": [
+          "a1"
+        ],
+        "agent2": [
+          "a0",
+          "a3",
+          "a4",
+          "a5",
+          "a6",
+          "a7"
+        ]
+      },
+      "theorem_violations": [
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a0' to 'a7'.",
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a3' to 'a7'.",
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a5' to 'a3'.",
+        "Agent 'agent2': indirect defeat via an odd-length simple path from 'a5' to 'a4'.",
+        "Agent 'agent2': indirect defeat via an odd-length simple path from 'a5' to 'a6'.",
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a7' to 'a4'.",
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a7' to 'a6'."
+      ]
+    },
+    {
+      "index": 22,
+      "p": 0.15,
+      "num_arguments": 6,
+      "arguments": [
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5"
+      ],
+      "attacks": [
+        [
+          "a1",
+          "a3"
+        ],
+        [
+          "a1",
+          "a4"
+        ],
+        [
+          "a2",
+          "a0"
+        ],
+        [
+          "a2",
+          "a4"
+        ],
+        [
+          "a3",
+          "a1"
+        ]
+      ],
+      "agent_arguments": {
+        "agent0": [
+          "a1"
+        ],
+        "agent1": [
+          "a0",
+          "a2",
+          "a5"
+        ],
+        "agent2": [
+          "a3",
+          "a4"
+        ]
+      },
+      "theorem_violations": [
+        "Agent 'agent1': direct defeat via an odd-length simple path from 'a2' to 'a0'."
       ]
     },
     {
       "index": 27,
-      "p": 0.1,
+      "p": 0.15,
       "num_arguments": 6,
       "arguments": [
         "a0",
@@ -1017,13 +710,12 @@
         ]
       },
       "theorem_violations": [
-        "Agent 'agent0': odd-length directed walk (self-defeat) from 'a2' to 'a2'.",
-        "Agent 'agent1': odd-length directed walk (defeat) from 'a4' to 'a1'."
+        "Agent 'agent1': direct defeat via an odd-length simple path from 'a4' to 'a1'."
       ]
     },
     {
       "index": 29,
-      "p": 0.1,
+      "p": 0.15,
       "num_arguments": 6,
       "arguments": [
         "a0",
@@ -1036,7 +728,15 @@
       "attacks": [
         [
           "a1",
+          "a2"
+        ],
+        [
+          "a1",
           "a3"
+        ],
+        [
+          "a2",
+          "a2"
         ],
         [
           "a2",
@@ -1044,6 +744,14 @@
         ],
         [
           "a3",
+          "a0"
+        ],
+        [
+          "a3",
+          "a4"
+        ],
+        [
+          "a4",
           "a0"
         ]
       ],
@@ -1062,12 +770,135 @@
         ]
       },
       "theorem_violations": [
-        "Agent 'agent1': odd-length directed walk (defeat) from 'a2' to 'a5'."
+        "Agent 'agent0': direct defeat via an odd-length simple path from 'a4' to 'a0'.",
+        "Agent 'agent1': direct defeat via an odd-length simple path from 'a1' to 'a2'.",
+        "Agent 'agent1': direct defeat via an odd-length simple path from 'a2' to 'a5'."
       ]
     },
     {
-      "index": 31,
-      "p": 0.1,
+      "index": 33,
+      "p": 0.15,
+      "num_arguments": 6,
+      "arguments": [
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5"
+      ],
+      "attacks": [
+        [
+          "a1",
+          "a2"
+        ],
+        [
+          "a1",
+          "a3"
+        ],
+        [
+          "a2",
+          "a3"
+        ],
+        [
+          "a2",
+          "a5"
+        ],
+        [
+          "a3",
+          "a1"
+        ],
+        [
+          "a3",
+          "a5"
+        ],
+        [
+          "a4",
+          "a5"
+        ]
+      ],
+      "agent_arguments": {
+        "agent0": [
+          "a2"
+        ],
+        "agent1": [
+          "a0",
+          "a1"
+        ],
+        "agent2": [
+          "a3",
+          "a4",
+          "a5"
+        ]
+      },
+      "theorem_violations": [
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a3' to 'a5'.",
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a4' to 'a5'."
+      ]
+    },
+    {
+      "index": 34,
+      "p": 0.15,
+      "num_arguments": 6,
+      "arguments": [
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5"
+      ],
+      "attacks": [
+        [
+          "a1",
+          "a1"
+        ],
+        [
+          "a1",
+          "a2"
+        ],
+        [
+          "a3",
+          "a1"
+        ],
+        [
+          "a4",
+          "a0"
+        ],
+        [
+          "a4",
+          "a2"
+        ],
+        [
+          "a4",
+          "a3"
+        ],
+        [
+          "a5",
+          "a0"
+        ]
+      ],
+      "agent_arguments": {
+        "agent0": [
+          "a0",
+          "a1",
+          "a4"
+        ],
+        "agent1": [
+          "a3"
+        ],
+        "agent2": [
+          "a2",
+          "a5"
+        ]
+      },
+      "theorem_violations": [
+        "Agent 'agent0': direct defeat via an odd-length simple path from 'a4' to 'a0'."
+      ]
+    },
+    {
+      "index": 36,
+      "p": 0.15,
       "num_arguments": 7,
       "arguments": [
         "a0",
@@ -1084,12 +915,12 @@
           "a3"
         ],
         [
-          "a4",
-          "a1"
+          "a1",
+          "a6"
         ],
         [
-          "a5",
-          "a0"
+          "a4",
+          "a4"
         ],
         [
           "a5",
@@ -1097,34 +928,202 @@
         ],
         [
           "a6",
-          "a5"
+          "a0"
+        ],
+        [
+          "a6",
+          "a1"
+        ],
+        [
+          "a6",
+          "a2"
+        ],
+        [
+          "a6",
+          "a4"
         ]
       ],
       "agent_arguments": {
         "agent0": [
-          "a1"
+          "a2"
         ],
         "agent1": [
-          "a2",
-          "a3",
-          "a4"
+          "a0",
+          "a1"
         ],
         "agent2": [
-          "a0",
+          "a3",
+          "a4",
           "a5",
           "a6"
         ]
       },
       "theorem_violations": [
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a5' to 'a0'.",
-        "Agent 'agent2': odd-length directed walk (self-defeat) from 'a5' to 'a5'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a6' to 'a0'.",
-        "Agent 'agent2': odd-length directed walk (defeat) from 'a6' to 'a5'."
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a6' to 'a4'."
       ]
     },
     {
-      "index": 34,
-      "p": 0.1,
+      "index": 37,
+      "p": 0.15,
+      "num_arguments": 7,
+      "arguments": [
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6"
+      ],
+      "attacks": [
+        [
+          "a0",
+          "a1"
+        ],
+        [
+          "a0",
+          "a4"
+        ],
+        [
+          "a2",
+          "a6"
+        ],
+        [
+          "a3",
+          "a6"
+        ],
+        [
+          "a4",
+          "a2"
+        ],
+        [
+          "a5",
+          "a1"
+        ]
+      ],
+      "agent_arguments": {
+        "agent0": [
+          "a0",
+          "a6"
+        ],
+        "agent1": [
+          "a2"
+        ],
+        "agent2": [
+          "a1",
+          "a3",
+          "a4",
+          "a5"
+        ]
+      },
+      "theorem_violations": [
+        "Agent 'agent0': indirect defeat via an odd-length simple path from 'a0' to 'a6'.",
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a5' to 'a1'."
+      ]
+    },
+    {
+      "index": 40,
+      "p": 0.15,
+      "num_arguments": 7,
+      "arguments": [
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6"
+      ],
+      "attacks": [
+        [
+          "a0",
+          "a0"
+        ],
+        [
+          "a3",
+          "a0"
+        ],
+        [
+          "a4",
+          "a6"
+        ],
+        [
+          "a5",
+          "a4"
+        ],
+        [
+          "a6",
+          "a4"
+        ]
+      ],
+      "agent_arguments": {
+        "agent0": [
+          "a5"
+        ],
+        "agent1": [
+          "a6"
+        ],
+        "agent2": [
+          "a0",
+          "a1",
+          "a2",
+          "a3",
+          "a4"
+        ]
+      },
+      "theorem_violations": [
+        "Agent 'agent2': direct defeat via an odd-length simple path from 'a3' to 'a0'."
+      ]
+    },
+    {
+      "index": 42,
+      "p": 0.15,
+      "num_arguments": 7,
+      "arguments": [
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6"
+      ],
+      "attacks": [
+        [
+          "a0",
+          "a6"
+        ],
+        [
+          "a2",
+          "a3"
+        ],
+        [
+          "a2",
+          "a5"
+        ]
+      ],
+      "agent_arguments": {
+        "agent0": [
+          "a0",
+          "a2",
+          "a5"
+        ],
+        "agent1": [
+          "a1",
+          "a4",
+          "a6"
+        ],
+        "agent2": [
+          "a3"
+        ]
+      },
+      "theorem_violations": [
+        "Agent 'agent0': direct defeat via an odd-length simple path from 'a2' to 'a5'."
+      ]
+    },
+    {
+      "index": 50,
+      "p": 0.15,
       "num_arguments": 6,
       "arguments": [
         "a0",
@@ -1136,43 +1135,97 @@
       ],
       "attacks": [
         [
-          "a1",
+          "a0",
           "a1"
         ],
         [
-          "a1",
-          "a2"
+          "a2",
+          "a0"
         ],
         [
-          "a4",
-          "a0"
+          "a3",
+          "a1"
         ],
         [
           "a4",
           "a3"
+        ]
+      ],
+      "agent_arguments": {
+        "agent0": [
+          "a0",
+          "a3",
+          "a4"
+        ],
+        "agent1": [
+          "a1",
+          "a5"
+        ],
+        "agent2": [
+          "a2"
+        ]
+      },
+      "theorem_violations": [
+        "Agent 'agent0': direct defeat via an odd-length simple path from 'a4' to 'a3'."
+      ]
+    },
+    {
+      "index": 52,
+      "p": 0.15,
+      "num_arguments": 7,
+      "arguments": [
+        "a0",
+        "a1",
+        "a2",
+        "a3",
+        "a4",
+        "a5",
+        "a6"
+      ],
+      "attacks": [
+        [
+          "a0",
+          "a2"
+        ],
+        [
+          "a1",
+          "a0"
+        ],
+        [
+          "a2",
+          "a3"
+        ],
+        [
+          "a2",
+          "a5"
         ],
         [
           "a5",
+          "a0"
+        ],
+        [
+          "a6",
           "a0"
         ]
       ],
       "agent_arguments": {
         "agent0": [
           "a0",
-          "a1",
+          "a3",
           "a4"
         ],
         "agent1": [
-          "a3"
+          "a1",
+          "a5",
+          "a6"
         ],
         "agent2": [
-          "a2",
-          "a5"
+          "a2"
         ]
       },
       "theorem_violations": [
-        "Agent 'agent0': odd-length directed walk (self-defeat) from 'a1' to 'a1'.",
-        "Agent 'agent0': odd-length directed walk (defeat) from 'a4' to 'a0'."
+        "Agent 'agent1': indirect defeat via an odd-length simple path from 'a1' to 'a5'.",
+        "Agent 'agent1': indirect defeat via an odd-length simple path from 'a6' to 'a5'."
       ]
     }
   ]
