@@ -1,0 +1,7 @@
+attack_probability,instances,strategyproof_count,strategyproof_fraction,theorem_5_4_holds_count,theorem_5_4_holds_fraction,theorem_holds_but_not_strategyproof_count,strategyproof_but_theorem_fails_count,total_profitable_deviation_counterexamples,elapsed_seconds
+0.15,5000,2637,0.5274,545,0.109,0,2092,25882,37.4854
+0.2,5000,1899,0.3798,298,0.0596,0,1601,37219,38.4766
+0.25,5000,1314,0.2628,127,0.0254,0,1187,46312,39.3476
+0.3,5000,874,0.1748,43,0.0086,0,831,55333,39.7945
+0.35,5000,650,0.13,10,0.002,0,640,56377,38.6951
+0.4,5000,511,0.1022,6,0.0012,0,505,55443,38.9721

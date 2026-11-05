@@ -1,0 +1,35 @@
+STRATEGIC ARGUMENTATION - EXPERIMENT SUMMARY
+============================================================================
+Instances per attack probability: 5000
+Number of agents: 3
+Arguments per instance: 6-8
+Attack probabilities: 0.15, 0.2, 0.25, 0.3, 0.35, 0.4
+Self-attacks included: True
+Random seed: 42
+
+RESULTS
+----------------------------------------------------------------------------
+     p |  SP fraction | Thm 5.4 fraction | Thm holds, not SP |  SP, Thm fails
+----------------------------------------------------------------------------
+  0.15 |       0.5274 |           0.1090 |                 0 |           2092
+  0.20 |       0.3798 |           0.0596 |                 0 |           1601
+  0.25 |       0.2628 |           0.0254 |                 0 |           1187
+  0.30 |       0.1748 |           0.0086 |                 0 |            831
+  0.35 |       0.1300 |           0.0020 |                 0 |            640
+  0.40 |       0.1022 |           0.0012 |                 0 |            505
+
+INTERPRETATION
+----------------------------------------------------------------------------
+- Theorem 5.4 gives a sufficient condition for strategyproofness, not a necessary one.
+- Therefore, strategyproof instances may exist even when the theorem condition fails.
+- In this run, the strategyproofness fraction decreases as attack probability increases.
+- The fraction satisfying Theorem 5.4 also decreases as attack probability increases in this run.
+- Strategyproof but theorem condition fails: 6856 instance(s) across all tested probabilities.
+- No instance violated the expected sufficient-condition implication in this run. This is empirical evidence, not a mathematical proof.
+- There were no instances where the theorem condition held but strategyproofness failed.
+
+OUTPUT FILES
+- experiment_results.json: complete machine-readable experiment results.
+- notable_instances.json: selected example frameworks for inspection.
+- experiment_summary.csv: tabular data for spreadsheets.
+- strategyproofness_vs_probability.png and theorem_condition_vs_probability.png: plots, if matplotlib is installed.

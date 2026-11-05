@@ -25,6 +25,7 @@ Run the assignment-scale experiment:
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import random
 import time
@@ -116,6 +117,133 @@ def _print_progress(index: int, total: int, started_at: float) -> None:
     elapsed = time.perf_counter() - started_at
     print(f"  Instance {index}/{total} completed ({elapsed:.1f}s elapsed)")
 
+
+
+def _build_interpretation(results: Dict[str, Any], probabilities: Sequence[float],
+                          anomaly_count: int) -> List[str]:
+    """Create concise, data-dependent interpretation statements."""
+    lines = [
+        "Theorem 5.4 gives a sufficient condition for strategyproofness, not a necessary one.",
+        "Therefore, strategyproof instances may exist even when the theorem condition fails.",
+    ]
+    sp_values = [results[str(p)]["strategyproof_fraction"] for p in probabilities]
+    thm_values = [results[str(p)]["theorem_5_4_holds_fraction"] for p in probabilities]
+    if len(sp_values) >= 2:
+        if all(a >= b for a, b in zip(sp_values, sp_values[1:])) and sp_values[0] > sp_values[-1]:
+            lines.append("In this run, the strategyproofness fraction decreases as attack probability increases.")
+        elif all(a <= b for a, b in zip(sp_values, sp_values[1:])) and sp_values[0] < sp_values[-1]:
+            lines.append("In this run, the strategyproofness fraction increases as attack probability increases.")
+        else:
+            lines.append("The strategyproofness fraction does not change monotonically across the tested probabilities.")
+        if all(a >= b for a, b in zip(thm_values, thm_values[1:])) and thm_values[0] > thm_values[-1]:
+            lines.append("The fraction satisfying Theorem 5.4 also decreases as attack probability increases in this run.")
+        elif all(a <= b for a, b in zip(thm_values, thm_values[1:])) and thm_values[0] < thm_values[-1]:
+            lines.append("The fraction satisfying Theorem 5.4 increases as attack probability increases in this run.")
+        else:
+            lines.append("The Theorem 5.4 satisfaction fraction is not monotonic across the tested probabilities.")
+    sp_but_not_thm = sum(v["strategyproof_but_theorem_fails_count"] for v in results.values())
+    thm_but_not_sp = sum(v["theorem_holds_but_not_strategyproof_count"] for v in results.values())
+    lines.append(f"Strategyproof but theorem condition fails: {sp_but_not_thm} instance(s) across all tested probabilities.")
+    if anomaly_count:
+        lines.append(f"WARNING: {anomaly_count} instance(s) satisfy the coded theorem condition but are not strategyproof; investigate before drawing conclusions.")
+    else:
+        lines.append("No instance violated the expected sufficient-condition implication in this run. This is empirical evidence, not a mathematical proof.")
+    if thm_but_not_sp == 0:
+        lines.append("There were no instances where the theorem condition held but strategyproofness failed.")
+    return lines
+
+
+def _write_readable_summary(destination: Path, summary: Dict[str, Any],
+                            results: Dict[str, Any], probabilities: Sequence[float],
+                            interpretation: Sequence[str]) -> Path:
+    """Write a plain-text report that is easy to open and read."""
+    path = destination / "experiment_summary.txt"
+    rows = [
+        "STRATEGIC ARGUMENTATION - EXPERIMENT SUMMARY",
+        "=" * 76,
+        f"Instances per attack probability: {summary['num_instances_per_probability']}",
+        f"Number of agents: {summary['num_agents']}",
+        f"Arguments per instance: {summary['min_arguments']}-{summary['max_arguments']}",
+        f"Attack probabilities: {', '.join(f'{p:g}' for p in probabilities)}",
+        f"Self-attacks included: {summary['include_self_attacks']}",
+        f"Random seed: {summary['seed']}",
+        "",
+        "RESULTS",
+        "-" * 76,
+        f"{'p':>6} | {'SP fraction':>12} | {'Thm 5.4 fraction':>16} | {'Thm holds, not SP':>17} | {'SP, Thm fails':>14}",
+        "-" * 76,
+    ]
+    for p in probabilities:
+        item = results[str(p)]
+        rows.append(
+            f"{float(p):6.2f} | {item['strategyproof_fraction']:12.4f} | "
+            f"{item['theorem_5_4_holds_fraction']:16.4f} | "
+            f"{item['theorem_holds_but_not_strategyproof_count']:17d} | "
+            f"{item['strategyproof_but_theorem_fails_count']:14d}"
+        )
+    rows.extend(["", "INTERPRETATION", "-" * 76])
+    rows.extend(f"- {line}" for line in interpretation)
+    rows.extend([
+        "", "OUTPUT FILES", "- experiment_results.json: complete machine-readable experiment results.",
+        "- notable_instances.json: selected example frameworks for inspection.",
+        "- experiment_summary.csv: tabular data for spreadsheets.",
+        "- strategyproofness_vs_probability.png and theorem_condition_vs_probability.png: plots, if matplotlib is installed.",
+    ])
+    path.write_text("\n".join(rows) + "\n", encoding="utf-8")
+    return path
+
+
+def _write_csv_summary(destination: Path, results: Dict[str, Any],
+                       probabilities: Sequence[float]) -> Path:
+    """Write one row per attack probability for spreadsheet analysis."""
+    path = destination / "experiment_summary.csv"
+    fields = [
+        "attack_probability", "instances", "strategyproof_count", "strategyproof_fraction",
+        "theorem_5_4_holds_count", "theorem_5_4_holds_fraction",
+        "theorem_holds_but_not_strategyproof_count", "strategyproof_but_theorem_fails_count",
+        "total_profitable_deviation_counterexamples", "elapsed_seconds",
+    ]
+    with path.open("w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fields)
+        writer.writeheader()
+        for p in probabilities:
+            item = results[str(p)]
+            writer.writerow({field: item[field] if field in item else item["p"] if field == "attack_probability" else item["num_instances"] if field == "instances" else "" for field in fields})
+    return path
+
+
+def _write_plots(destination: Path, results: Dict[str, Any],
+                 probabilities: Sequence[float]) -> List[Path]:
+    """Save two separate, report-friendly line charts when matplotlib is available."""
+    try:
+        import matplotlib.pyplot as plt
+    except ImportError:
+        print("Plots skipped: matplotlib is not installed (install with: python3 -m pip install matplotlib).")
+        return []
+
+    x = [float(p) for p in probabilities]
+    outputs: List[Path] = []
+    charts = [
+        ("strategyproof_fraction", "Strategyproofness vs. attack probability",
+         "Strategyproof instances (%)", "strategyproofness_vs_probability.png"),
+        ("theorem_5_4_holds_fraction", "Theorem 5.4 condition vs. attack probability",
+         "Instances satisfying Theorem 5.4 (%)", "theorem_condition_vs_probability.png"),
+    ]
+    for key, title, ylabel, filename in charts:
+        y = [results[str(p)][key] * 100 for p in probabilities]
+        fig, ax = plt.subplots(figsize=(7.5, 4.5))
+        ax.plot(x, y, marker="o", linewidth=2)
+        ax.set_title(title)
+        ax.set_xlabel("Attack probability (p)")
+        ax.set_ylabel(ylabel)
+        ax.set_ylim(0, 100)
+        ax.grid(True, alpha=0.3)
+        fig.tight_layout()
+        output = destination / filename
+        fig.savefig(output, dpi=200, bbox_inches="tight")
+        plt.close(fig)
+        outputs.append(output)
+    return outputs
 
 def run_full_experiments(
     num_instances: int = 1000,
@@ -309,25 +437,23 @@ def run_full_experiments(
             f"{result['strategyproof_but_theorem_fails_count']:14d}"
         )
 
+    interpretation = _build_interpretation(all_results, probabilities, anomaly_count)
     print("\nInterpretation:")
-    print(
-        "- Theorem 5.4 provides a sufficient condition, so strategyproof "
-        "instances may also occur when its condition fails."
+    for line in interpretation:
+        print(f"- {line}")
+
+    readable_path = _write_readable_summary(
+        destination, summary, all_results, probabilities, interpretation
     )
-    if anomaly_count:
-        print(
-            f"- WARNING: {anomaly_count} instance(s) were classified as satisfying "
-            "the theorem condition but not strategyproof. Inspect these examples; "
-            "they may indicate a modelling, path-definition, or implementation issue."
-        )
-    else:
-        print(
-            "- No instance violated the expected sufficient-condition implication "
-            "in this run."
-        )
+    csv_path = _write_csv_summary(destination, all_results, probabilities)
+    plot_paths = _write_plots(destination, all_results, probabilities)
 
     print(f"\nDetailed results: {results_path}")
     print(f"Saved examples:   {notable_path}")
+    print(f"Readable summary: {readable_path}")
+    print(f"CSV table:        {csv_path}")
+    for plot_path in plot_paths:
+        print(f"Plot:             {plot_path}")
 
     return all_results, notable
 
