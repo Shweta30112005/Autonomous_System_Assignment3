@@ -1,9 +1,4 @@
 # Computational Argumentation Frameworks and Strategyproofness
-## Autonomous Systems — Assignment 3
-
-**Authors:** Akanksha Singh (B23CM1005) &bull; Shweta Mandal (B23CM1037)
-
----
 
 ## Visual Architecture Overview
 
