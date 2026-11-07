@@ -140,6 +140,13 @@ class ArgumentationFramework:
         subset = self._validate_subset(arguments)
         return self.is_admissible(subset) and self.characteristic_function(subset) == subset
 
+    def is_admissible_and_complete(self, arguments: Iterable[Argument]) -> Tuple[bool, bool]:
+        """Check if set S is admissible and if S is a complete extension."""
+        subset = self._validate_subset(arguments)
+        admissible = self.is_admissible(subset)
+        complete = admissible and self.characteristic_function(subset) == subset
+        return admissible, complete
+
     def _all_subsets(self) -> Iterator[Set[Argument]]:
         ordered = sorted(self.arguments)
         for size in range(len(ordered) + 1):
@@ -193,6 +200,16 @@ class ArgumentationFramework:
             ):
                 result.append(extension)
         return result
+
+    def all_extensions(self) -> Dict[str, List[Set[Argument]]]:
+        """Compute all major extensions: grounded, complete, preferred, stable, and semi-stable."""
+        return {
+            "grounded": [self.grounded_extension()],
+            "complete": self.all_complete_extensions(),
+            "preferred": self.preferred_extensions(),
+            "stable": self.stable_extensions(),
+            "semi_stable": self.semi_stable_extensions(),
+        }
 
     # ------------------------------------------------------------------
     # Complete labellings and acceptance status
@@ -450,6 +467,195 @@ class StrategicArgumentation:
     def is_strategyproof(self) -> Tuple[bool, List[str]]:
         """Brute-force strategyproofness check (alias for dominant truthfulness)."""
         return self.is_truthful_dominant()
+
+
+# ======================================================================
+# Standalone Functional API for Assignment 3
+# ======================================================================
+
+def is_conflict_free(framework: ArgumentationFramework, arguments: Iterable[Argument]) -> bool:
+    """Test if a given set S of arguments is conflict-free in the framework."""
+    return framework.is_conflict_free(arguments)
+
+
+def is_defended_by(framework: ArgumentationFramework, arg: Argument, arguments: Iterable[Argument]) -> bool:
+    """Test if a given argument can be defended by a given set S in the framework."""
+    return framework.is_defended_by(arg, arguments)
+
+
+def characteristic_function(framework: ArgumentationFramework, arguments: Iterable[Argument]) -> Set[Argument]:
+    """Characteristic function F(S): identify the set of arguments defended by set S."""
+    return framework.characteristic_function(arguments)
+
+
+def is_admissible(framework: ArgumentationFramework, arguments: Iterable[Argument]) -> bool:
+    """Check if a given set S of arguments is admissible."""
+    return framework.is_admissible(arguments)
+
+
+def is_complete_extension(framework: ArgumentationFramework, arguments: Iterable[Argument]) -> bool:
+    """Check if a given set S of arguments is a complete extension."""
+    return framework.is_complete_extension(arguments)
+
+
+def check_admissible_and_complete(
+    framework: ArgumentationFramework, arguments: Iterable[Argument]
+) -> Tuple[bool, bool]:
+    """Check if a given set S is admissible and if it is a complete extension."""
+    return framework.is_admissible_and_complete(arguments)
+
+
+def grounded_extension(framework: ArgumentationFramework) -> Set[Argument]:
+    """Compute the grounded extension of the given argumentation framework."""
+    return framework.grounded_extension()
+
+
+compute_grounded_extension = grounded_extension
+
+
+def all_complete_extensions(framework: ArgumentationFramework) -> List[Set[Argument]]:
+    """Compute all complete extensions of the given argumentation framework."""
+    return framework.all_complete_extensions()
+
+
+compute_all_complete_extensions = all_complete_extensions
+
+
+def preferred_extensions(framework: ArgumentationFramework) -> List[Set[Argument]]:
+    """Compute all preferred extensions of the given argumentation framework."""
+    return framework.preferred_extensions()
+
+
+compute_preferred_extensions = preferred_extensions
+
+
+def stable_extensions(framework: ArgumentationFramework) -> List[Set[Argument]]:
+    """Compute all stable extensions of the given argumentation framework."""
+    return framework.stable_extensions()
+
+
+compute_stable_extensions = stable_extensions
+
+
+def semi_stable_extensions(framework: ArgumentationFramework) -> List[Set[Argument]]:
+    """Compute all semi-stable extensions of the given argumentation framework."""
+    return framework.semi_stable_extensions()
+
+
+compute_semi_stable_extensions = semi_stable_extensions
+
+
+def all_extensions(framework: ArgumentationFramework) -> Dict[str, List[Set[Argument]]]:
+    """Compute a collection of extensions (grounded, complete, preferred, stable, semi-stable)."""
+    return framework.all_extensions()
+
+
+compute_all_extensions = all_extensions
+
+
+def all_labellings(framework: ArgumentationFramework) -> List[Dict[Argument, Label]]:
+    """Generate all legal (in/out/undec) labellings for the argumentation framework."""
+    return framework.all_labellings()
+
+
+generate_all_labellings = all_labellings
+
+
+def acceptance_status(framework: ArgumentationFramework, arg: Argument) -> str:
+    """Report acceptance status of an argument: 'skeptically accepted', 'credulously accepted', or 'rejected'."""
+    return framework.acceptance_status(arg)
+
+
+report_acceptance_status = acceptance_status
+
+
+# Strategic Argumentation standalone functions
+
+def grounded_direct_mechanism(
+    attacks: Iterable[Attack] | ArgumentationFramework,
+    revealed_arguments: Mapping[str, Iterable[Argument]],
+) -> Set[Argument]:
+    """Takes the global attack relation (or framework) and one revealed argument set per agent,
+    and returns the grounded extension of the graph induced by the union of revealed arguments.
+    """
+    if isinstance(attacks, ArgumentationFramework):
+        all_attacks = set(attacks.attacks)
+    else:
+        all_attacks = set(attacks)
+
+    union_args: Set[Argument] = set()
+    for args in revealed_arguments.values():
+        union_args.update(args)
+
+    induced_attacks = {
+        (u, v) for u, v in all_attacks if u in union_args and v in union_args
+    }
+    af_induced = ArgumentationFramework(union_args, induced_attacks)
+    return af_induced.grounded_extension()
+
+
+def find_best_responses(
+    framework_or_attacks: ArgumentationFramework | Iterable[Attack],
+    agent: str,
+    agent_arguments: Mapping[str, Iterable[Argument]],
+    others_revealed: Mapping[str, Iterable[Argument]],
+) -> Tuple[List[Set[Argument]], int]:
+    """Enumerates every subset of A_i that agent i could reveal, given fixed reports by the others,
+    and returns the reports that maximise agent i's utility and the maximum utility.
+    """
+    if isinstance(framework_or_attacks, ArgumentationFramework):
+        fw = framework_or_attacks
+    else:
+        all_args = set().union(*agent_arguments.values())
+        fw = ArgumentationFramework(all_args, framework_or_attacks)
+    strategic = StrategicArgumentation(fw, agent_arguments)
+    return strategic.best_responses(agent, others_revealed)
+
+
+def check_theorem_5_3(
+    framework_or_attacks: ArgumentationFramework | Iterable[Attack],
+    agent_arguments: Mapping[str, Iterable[Argument]],
+) -> Tuple[bool, List[str]]:
+    """Check Theorem 5.3: verify if revealing all of A_i (truthfulness) is a best response
+    against every combination of subsets the other agents could reveal.
+    """
+    if isinstance(framework_or_attacks, ArgumentationFramework):
+        fw = framework_or_attacks
+    else:
+        all_args = set().union(*agent_arguments.values())
+        fw = ArgumentationFramework(all_args, framework_or_attacks)
+    strategic = StrategicArgumentation(fw, agent_arguments)
+    return strategic.is_truthful_dominant()
+
+
+verify_theorem_5_3 = check_theorem_5_3
+
+
+def check_theorem_5_4(
+    framework_or_attacks: ArgumentationFramework | Iterable[Attack],
+    agent_arguments: Mapping[str, Iterable[Argument]],
+) -> Tuple[bool, List[str]]:
+    """Check Theorem 5.4: verify that no agent holds two arguments alpha, beta with an
+    odd-length directed path from alpha to beta in the full graph.
+    """
+    if isinstance(framework_or_attacks, ArgumentationFramework):
+        fw = framework_or_attacks
+    else:
+        all_args = set().union(*agent_arguments.values())
+        fw = ArgumentationFramework(all_args, framework_or_attacks)
+    strategic = StrategicArgumentation(fw, agent_arguments)
+    return strategic.check_theorem_5_4()
+
+
+verify_theorem_5_4 = check_theorem_5_4
+
+
+def is_strategyproof(
+    framework_or_attacks: ArgumentationFramework | Iterable[Attack],
+    agent_arguments: Mapping[str, Iterable[Argument]],
+) -> Tuple[bool, List[str]]:
+    """Check if a grounded direct argumentation mechanism is strategyproof."""
+    return check_theorem_5_3(framework_or_attacks, agent_arguments)
 
 
 if __name__ == "__main__":

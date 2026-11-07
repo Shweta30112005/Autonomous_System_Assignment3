@@ -201,5 +201,150 @@ class TestTheorem54PathCondition(unittest.TestCase):
         self.assertFalse(strategic.has_odd_length_path("a", "a"))
 
 
+class TestBookExamples(unittest.TestCase):
+    """Explicit verification of textbook examples and documented errata.
+
+    From: Gerhard Weiss (ed.), Multiagent Systems (2nd ed.),
+    Chapter 5: Argumentation among Agents (Iyad Rahwan & Kate Larson).
+    """
+
+    def test_example_5_10_hiding_arguments_gains_utility(self):
+        """Example 5.10: Grounded direct mechanism is NOT strategyproof.
+
+        Agent x owns {a1, a4, a5}, Agent y owns {a2}, Agent z owns {a3}.
+        Attacks: a1 -> a2 -> a3 -> a4, and a3 -> a5.
+
+        Truthful outcome: {a1, a3} -> u_x = 1 (only a1).
+        Hiding a1 (reporting {a4, a5}):
+          Revealed: {a2, a3, a4, a5}.
+          a2 is unattacked -> a2 is IN -> a3 is OUT -> a4, a5 are IN!
+          Outcome: {a2, a4, a5} -> u_x = 2!
+        Agent x gains by withholding a1.
+
+        Note on book misprint: In the original text of Example 5.10, the utilities
+        were accidentally transposed between the truthful and hiding profiles.
+        """
+        af = ArgumentationFramework(
+            {"a1", "a2", "a3", "a4", "a5"},
+            {("a1", "a2"), ("a2", "a3"), ("a3", "a4"), ("a3", "a5")},
+        )
+        ownership = {
+            "x": {"a1", "a4", "a5"},
+            "y": {"a2"},
+            "z": {"a3"},
+        }
+        sa = StrategicArgumentation(af, ownership)
+
+        # 1. Truthful revelation
+        truthful_reports = {"x": {"a1", "a4", "a5"}, "y": {"a2"}, "z": {"a3"}}
+        truthful_outcome = sa.mechanism(truthful_reports)
+        self.assertEqual(truthful_outcome, {"a1", "a3"})
+        self.assertEqual(sa.utility("x", truthful_outcome), 1)
+        self.assertEqual(sa.utility("y", truthful_outcome), 0)
+        self.assertEqual(sa.utility("z", truthful_outcome), 1)
+
+        # 2. Strategic manipulation: agent x hides a1
+        hidden_reports = {"x": {"a4", "a5"}, "y": {"a2"}, "z": {"a3"}}
+        hidden_outcome = sa.mechanism(hidden_reports)
+        self.assertEqual(hidden_outcome, {"a2", "a4", "a5"})
+        self.assertEqual(sa.utility("x", hidden_outcome), 2)  # Increased from 1 to 2!
+
+        # 3. Strategyproofness fails
+        is_sp, counterexamples = sa.is_strategyproof()
+        self.assertFalse(is_sp)
+        self.assertTrue(any("Agent 'x'" in ce for ce in counterexamples))
+
+        # 4. Theorem 5.4 condition fails due to odd-length paths from a1 to a4 and a5
+        thm_holds, violations = sa.check_theorem_5_4()
+        self.assertFalse(thm_holds)
+        self.assertTrue(any("from 'a1' to 'a4'" in v for v in violations))
+        self.assertTrue(any("from 'a1' to 'a5'" in v for v in violations))
+
+    def test_example_5_11_cancellation_of_indirect_defeat(self):
+        """Example 5.11: Strategyproof despite violating Theorem 5.4 condition.
+
+        Agent x owns {a1, a4, a5, a6}, Agent y owns {a2}, Agent z owns {a3}.
+        Attacks: a1 -> a2 -> a3 -> a4, a3 -> a5, and a6 -> a3.
+
+        Argument a6 directly attacks a3, canceling the indirect self-defeat
+        of a1 on {a4, a5}. Because a6 defeats a3, a4 and a5 are always
+        accepted whenever a6 is revealed, so agent x has no incentive to hide a1.
+
+        Note on book misprint: In the text discussion following Example 5.11,
+        the argument that cancels the indirect self-defeat is a6, not a5.
+        """
+        af = ArgumentationFramework(
+            {"a1", "a2", "a3", "a4", "a5", "a6"},
+            {
+                ("a1", "a2"),
+                ("a2", "a3"),
+                ("a3", "a4"),
+                ("a3", "a5"),
+                ("a6", "a3"),
+            },
+        )
+        ownership = {
+            "x": {"a1", "a4", "a5", "a6"},
+            "y": {"a2"},
+            "z": {"a3"},
+        }
+        sa = StrategicArgumentation(af, ownership)
+
+        # Truthful outcome
+        truthful_outcome = sa.mechanism(ownership)
+        self.assertEqual(truthful_outcome, {"a1", "a4", "a5", "a6"})
+        self.assertEqual(sa.utility("x", truthful_outcome), 4)
+
+        # Mechanism IS strategyproof!
+        is_sp, counterexamples = sa.is_strategyproof()
+        self.assertTrue(is_sp)
+        self.assertEqual(counterexamples, [])
+
+        # But Theorem 5.4's condition FAILS because odd paths a1 -> ... -> a4, a5 still exist
+        thm_holds, violations = sa.check_theorem_5_4()
+        self.assertFalse(thm_holds)
+        self.assertTrue(len(violations) >= 2)
+
+
+class TestStandaloneStrategicAPI(unittest.TestCase):
+    def setUp(self):
+        self.attacks = {("a", "b"), ("b", "c")}
+        self.agent_args = {"agent1": {"a", "c"}, "agent2": {"b"}}
+        self.af = ArgumentationFramework({"a", "b", "c"}, self.attacks)
+
+    def test_standalone_mechanism(self):
+        from argumentation_framework import grounded_direct_mechanism
+        outcome = grounded_direct_mechanism(self.attacks, self.agent_args)
+        self.assertEqual(outcome, {"a", "c"})
+
+        # Also works when passing framework object
+        outcome2 = grounded_direct_mechanism(self.af, self.agent_args)
+        self.assertEqual(outcome2, {"a", "c"})
+
+    def test_standalone_find_best_responses(self):
+        from argumentation_framework import find_best_responses
+        reports, utility = find_best_responses(
+            self.af, "agent1", self.agent_args, {"agent2": {"b"}}
+        )
+        self.assertEqual(utility, 2)
+        self.assertIn({"a", "c"}, reports)
+
+    def test_standalone_check_theorems(self):
+        from argumentation_framework import (
+            check_theorem_5_3,
+            check_theorem_5_4,
+            is_strategyproof,
+        )
+        sp, ce = is_strategyproof(self.af, self.agent_args)
+        self.assertTrue(sp)
+        self.assertEqual(ce, [])
+
+        thm53, ce53 = check_theorem_5_3(self.af, self.agent_args)
+        self.assertTrue(thm53)
+
+        thm54, v54 = check_theorem_5_4(self.af, self.agent_args)
+        self.assertTrue(thm54)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

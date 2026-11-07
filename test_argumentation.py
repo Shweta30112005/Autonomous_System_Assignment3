@@ -241,5 +241,57 @@ class TestAcceptanceAndLabellingValidation(unittest.TestCase):
         self.assertEqual(sub.attacks, {("a", "b")})
 
 
+class TestStandaloneFunctionalAPI(unittest.TestCase):
+    def setUp(self):
+        self.af = ArgumentationFramework(
+            {"a", "b", "c"}, {("a", "b"), ("b", "c")}
+        )
+
+    def test_all_extensions_dictionary(self):
+        exts = self.af.all_extensions()
+        self.assertIn("grounded", exts)
+        self.assertIn("complete", exts)
+        self.assertIn("preferred", exts)
+        self.assertIn("stable", exts)
+        self.assertIn("semi_stable", exts)
+        self.assertEqual(exts["grounded"], [{"a", "c"}])
+        self.assertEqual(exts["complete"], [{"a", "c"}])
+        self.assertEqual(exts["preferred"], [{"a", "c"}])
+        self.assertEqual(exts["stable"], [{"a", "c"}])
+        self.assertEqual(exts["semi_stable"], [{"a", "c"}])
+
+    def test_admissible_and_complete_tuple(self):
+        admissible, complete = self.af.is_admissible_and_complete({"a"})
+        self.assertTrue(admissible)
+        self.assertFalse(complete)
+
+        admissible2, complete2 = self.af.is_admissible_and_complete({"a", "c"})
+        self.assertTrue(admissible2)
+        self.assertTrue(complete2)
+
+    def test_standalone_functions_match_class_methods(self):
+        import argumentation_framework as af_mod
+
+        self.assertTrue(af_mod.is_conflict_free(self.af, {"a", "c"}))
+        self.assertFalse(af_mod.is_conflict_free(self.af, {"a", "b"}))
+        self.assertTrue(af_mod.is_defended_by(self.af, "c", {"a"}))
+        self.assertEqual(af_mod.characteristic_function(self.af, {"a"}), {"a", "c"})
+        self.assertTrue(af_mod.is_admissible(self.af, {"a", "c"}))
+        self.assertTrue(af_mod.is_complete_extension(self.af, {"a", "c"}))
+        self.assertEqual(
+            af_mod.check_admissible_and_complete(self.af, {"a", "c"}),
+            (True, True)
+        )
+        self.assertEqual(af_mod.grounded_extension(self.af), {"a", "c"})
+        self.assertEqual(af_mod.all_complete_extensions(self.af), [{"a", "c"}])
+        self.assertEqual(af_mod.preferred_extensions(self.af), [{"a", "c"}])
+        self.assertEqual(af_mod.stable_extensions(self.af), [{"a", "c"}])
+        self.assertEqual(af_mod.semi_stable_extensions(self.af), [{"a", "c"}])
+        self.assertEqual(af_mod.all_extensions(self.af), self.af.all_extensions())
+        self.assertEqual(af_mod.all_labellings(self.af), self.af.all_labellings())
+        self.assertEqual(af_mod.acceptance_status(self.af, "a"), "skeptically accepted")
+        self.assertEqual(af_mod.acceptance_status(self.af, "b"), "rejected")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

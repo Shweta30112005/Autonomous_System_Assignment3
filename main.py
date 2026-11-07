@@ -249,6 +249,54 @@ def demo_part2() -> None:
     for violation in violations3[:3]:
         print("  Condition violation:", violation)
 
+    print("\n8. Textbook Example 5.10: Strategic Manipulation via Indirect Self-Defeat")
+    af_ex10 = ArgumentationFramework(
+        {"a1", "a2", "a3", "a4", "a5"},
+        {("a1", "a2"), ("a2", "a3"), ("a3", "a4"), ("a3", "a5")},
+    )
+    ownership_ex10 = {
+        "x": {"a1", "a4", "a5"},
+        "y": {"a2"},
+        "z": {"a3"},
+    }
+    sa_ex10 = StrategicArgumentation(af_ex10, ownership_ex10)
+    out_10_truth = sa_ex10.mechanism(ownership_ex10)
+    u_x_truth = sa_ex10.utility("x", out_10_truth)
+    out_10_hide = sa_ex10.mechanism({"x": {"a4", "a5"}, "y": {"a2"}, "z": {"a3"}})
+    u_x_hide = sa_ex10.utility("x", out_10_hide)
+    sp_10, ce_10 = sa_ex10.is_strategyproof()
+    thm_10, viol_10 = sa_ex10.check_theorem_5_4()
+
+    print("  Framework attacks: a1->a2->a3->a4, a3->a5")
+    print(f"  Truthful outcome: {sorted(out_10_truth)} | Agent x utility: {u_x_truth}")
+    print(f"  Agent x hides a1 (reveals {{a4, a5}}): outcome: {sorted(out_10_hide)} | Agent x utility: {u_x_hide}")
+    print(f"  Utility gain from manipulation: {u_x_hide - u_x_truth} (Strategyproof: {sp_10})")
+    print(f"  Theorem 5.4 condition: {thm_10} (Violations: {len(viol_10)})")
+    print("  * Note on Book Errata: In Example 5.10, the utilities of revealing vs hiding were transposed.")
+
+    print("\n9. Textbook Example 5.11: Cancellation of Indirect Self-Defeat")
+    af_ex11 = ArgumentationFramework(
+        {"a1", "a2", "a3", "a4", "a5", "a6"},
+        {("a1", "a2"), ("a2", "a3"), ("a3", "a4"), ("a3", "a5"), ("a6", "a3")},
+    )
+    ownership_ex11 = {
+        "x": {"a1", "a4", "a5", "a6"},
+        "y": {"a2"},
+        "z": {"a3"},
+    }
+    sa_ex11 = StrategicArgumentation(af_ex11, ownership_ex11)
+    out_11_truth = sa_ex11.mechanism(ownership_ex11)
+    sp_11, ce_11 = sa_ex11.is_strategyproof()
+    thm_11, viol_11 = sa_ex11.check_theorem_5_4()
+
+    print("  Added argument a6 with attack (a6, a3) owned by agent x.")
+    print(f"  Truthful outcome: {sorted(out_11_truth)} | Agent x utility: {sa_ex11.utility('x', out_11_truth)}")
+    print(f"  Strategyproof: {sp_11} | Theorem 5.4 condition holds: {thm_11}")
+    print(f"  Violations remaining: {len(viol_11)}")
+    print("  * Crucial Insight: Even though Theorem 5.4 fails, strategyproofness holds because")
+    print("    argument a6 directly defeats a3, cancelling the indirect defeat of a1 on a4 and a5.")
+    print("  * Note on Book Errata: In the post-example text, the cancelling argument is a6, not a5.")
+
 
 def demo_part3(
     instances: int = 10,

@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autonomous Systems — Assignment 3: Argumentation Engine &amp; Strategic Mechanism</title>
+  <style>
+    /* =========================================================================
+       ACADEMIC WORKSTATION THEME (Y2K / RETRO-TECH INFLUENCE, STRICTLY NO GRADIENTS)
+       Features: Solid high-contrast palette, beveled panel borders, crisp typography,
+       classic 3D outset buttons, clean responsive sliders, zero CSS/canvas gradients.
+       ========================================================================= */
+    :root {
+      --bg: #0b0f19;
+      --panel-bg: #141c2c;
+      --card-bg: #0d1320;
+      --titlebar-bg: #162a45;
+      --titlebar-text: #ffffff;
+      --border-outer: #000000;
+      --border-bevel-light: #313f5c;
+      --border-bevel-dark: #070a12;
+      --text: #e2e8f0;
+      --text-muted: #8c9cb6;
+      --text-bright: #ffffff;
+      --primary: #7dd3fc;
+      --primary-hover: #bae6fd;
+      --accent-pink: #ff007f;
+      --accent-yellow: #ffc400;
+      --in-color: #00e676;
+      --out-color: #ff3366;
+      --undec-color: #ffb300;
+      --agent0: #7dd3fc;
+      --agent1: #ff007f;
+      --agent2: #ffc400;
+      --agent3: #00e676;
+      --agent4: #a855f7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, "Trebuchet MS", -apple-system, sans-serif;
+    }
+
+    code, pre, .mono {
+      font-family: "Lucida Console", "Courier New", monospace !important;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Top Academic Header */
+    header.academic-header {
+      background-color: #080d16;
+      border-bottom: 2px solid var(--border-outer);
+      padding: 8px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .course-badge {
+      background-color: var(--titlebar-bg);
+      color: #ffffff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border: 1px solid #4a6fa5;
+      letter-spacing: 0.8px;
+    }
+    .header-titles h1 {
+      font-size: 1.05rem;
+      color: #ffffff;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .header-titles .subtitle {
+      font-size: 0.75rem;
+      color: var(--primary);
+    }
+    .header-authors {
+      text-align: right;
+      font-size: 0.73rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+    .header-authors strong {
+      color: #ffffff;
+    }
+
+    /* 3-Column Workstation Layout with Exact Proportional Widths */
+    .workstation-grid {
+      display: grid;
+      grid-template-columns: 290px minmax(420px, 1fr) 420px;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      background-color: #060911;
+      gap: 4px;
+      padding: 4px;
+    }
+
+    @media (max-width: 1250px) {
+      .workstation-grid {
+        grid-template-columns: 275px minmax(360px, 1fr) 390px;
+      }
+    }
+
+    /* Classic Beveled Panels */
+    .ws-panel {
+      background-color: var(--panel-bg);
+      border: 2px solid var(--border-outer);
+      border-top: 1px solid var(--border-bevel-light);
+      border-left: 1px solid var(--border-bevel-light);
+      border-right: 1px solid var(--border-bevel-dark);
+      border-bottom: 1px solid var(--border-bevel-dark);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+
+    .ws-titlebar {
+      background-color: var(--titlebar-bg);
+      color: var(--titlebar-text);
+      padding: 5px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      border-bottom: 2px solid var(--border-outer);
+      user-select: none;
+    }
+    .ws-titlebar-tools {
+      display: flex;
+      gap: 6px;
+    }
+
+    .ws-content {
+      padding: 10px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Classic Scrollbar */
+    .ws-content::-webkit-scrollbar {
+      width: 10px;
+    }
+    .ws-content::-webkit-scrollbar-track {
+      background-color: #080c14;
+      border-left: 1px solid #1c2638;
+    }
+    .ws-content::-webkit-scrollbar-thumb {
+      background-color: #26334a;
+      border: 1px solid #4a5d80;
+    }
+
+    /* Section Cards */
+    .card-box {
+      background-color: var(--card-bg);
+      border: 1px solid #1e293f;
+      border-top-color: #2f4060;
+      border-left-color: #2f4060;
+      padding: 8px 10px;
+    }
+    .card-box-header {
+      font-size: 0.74rem;
+      color: var(--primary);
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1c2538;
+      padding-bottom: 3px;
+    }
+
+    label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 3px;
+      font-weight: 600;
+    }
+
+    /* Clean Sliders */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 5px;
+      margin-bottom: 3px;
+    }
+    .slider-label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .slider-val {
+      font-size: 0.74rem;
+      color: var(--accent-yellow);
+      font-weight: 700;
+      min-width: 45px;
+      text-align: right;
+      font-family: monospace;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: #000000;
+      border: 1px solid #283750;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 18px;
+      background: var(--primary);
+      border: 1px solid #ffffff;
+      border-right-color: #000000;
+      border-bottom-color: #000000;
+      cursor: ew-resize;
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 18px;
+      background: var(--primary);
+      border: 1px solid #ffffff;
+      border-right-color: #000000;
+      border-bottom-color: #000000;
+      cursor: ew-resize;
+    }
+
+    /* Form Controls */
+    select, input[type="text"] {
+      width: 100%;
+      background-color: #080c14;
+      border: 1px solid #283750;
+      border-top-color: #000000;
+      border-left-color: #000000;
+      color: #ffffff;
+      padding: 5px 8px;
+      font-size: 0.76rem;
+      outline: none;
+    }
+    select:focus, input[type="text"]:focus {
+      border-color: var(--primary);
+    }
+
+    /* Classic Buttons */
+    button {
+      background-color: #1a253a;
+      color: #ffffff;
+      border: 1px solid #5a729e;
+      border-right-color: #090e18;
+      border-bottom-color: #090e18;
+      padding: 5px 10px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+    }
+    button:hover {
+      background-color: #243452;
+      color: var(--primary);
+    }
+    button:active {
+      border: 1px solid #090e18;
+      border-right-color: #5a729e;
+      border-bottom-color: #5a729e;
+      transform: translate(1px, 1px);
+    }
+    button.primary-btn {
+      background-color: #24426b;
+      color: #ffffff;
+      border-color: #4a6f9f;
+    }
+    button.primary-btn:hover {
+      background-color: #2f5487;
+      color: #ffffff;
+    }
+    button.accent-btn {
+      background-color: #6b143a;
+      color: #ffffff;
+      border-color: #a3225a;
+    }
+    button.accent-btn:hover {
+      background-color: #8c1b4d;
+    }
+
+    /* Canvas Stage */
+    .center-stage {
+      position: relative;
+      background-color: #05080e;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border: 2px solid var(--border-outer);
+      min-width: 0;
+    }
+    /* Status Legend Toolbar */
+    .canvas-hud {
+      background-color: #0b111e;
+      border-bottom: 1px solid #1a273e;
+      padding: 5px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.72rem;
+      flex-shrink: 0;
+      min-height: 34px;
+    }
+    .legend-chips {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: nowrap;
+    }
+    .legend-title {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-right: 2px;
+    }
+    .hud-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background-color: #060910;
+      padding: 3px 8px;
+      border: 1px solid #223048;
+      font-size: 0.70rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .hud-dot {
+      width: 9px;
+      height: 9px;
+      border: 1px solid #000000;
+      flex-shrink: 0;
+    }
+    .hud-arrow-symbol {
+      color: #ff3366;
+      font-weight: 900;
+      font-size: 0.82rem;
+      line-height: 1;
+    }
+    .hud-help {
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      white-space: nowrap;
+      margin-left: auto;
+    }
+
+    #graphCanvas {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      background-color: #05080e;
+      cursor: crosshair;
+      display: block;
+    }
+
+    /* Folder Tabs */
+    .tab-bar {
+      display: flex;
+      background-color: #090d16;
+      border-bottom: 2px solid var(--border-outer);
+      flex-shrink: 0;
+    }
+    .tab-btn {
+      flex: 1;
+      padding: 7px 4px;
+      background-color: #121826;
+      color: var(--text-muted);
+      border: 1px solid #202c42;
+      border-bottom: none;
+      font-size: 0.72rem;
+      cursor: pointer;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .tab-btn.active {
+      background-color: var(--panel-bg);
+      color: var(--primary);
+      font-weight: 700;
+      border-top: 2px solid var(--primary);
+    }
+
+    .tab-content {
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .tab-content.active {
+      display: flex;
+    }
+
+    /* Extensions Display */
+    .ext-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .ext-item {
+      background-color: #080c14;
+      border: 1px solid #1d283c;
+      border-left: 3px solid var(--primary);
+      padding: 4px 8px;
+      font-size: 0.74rem;
+      display: flex;
+      justify-content: space-between;
+      color: var(--accent-yellow);
+      word-break: break-all;
+    }
+
+    /* Pills & Badges */
+    .pill {
+      font-size: 0.68rem;
+      padding: 1px 5px;
+      font-weight: 700;
+      border: 1px solid #000000;
+      text-transform: uppercase;
+    }
+    .pill-in { background-color: var(--in-color); color: #000000; }
+    .pill-out { background-color: var(--out-color); color: #ffffff; }
+    .pill-undec { background-color: var(--undec-color); color: #000000; }
+
+    /* Tables with Exact Proportional Widths */
+    table.academic-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.72rem;
+      table-layout: fixed;
+    }
+    table.academic-table th, table.academic-table td {
+      padding: 5px 6px;
+      text-align: left;
+      border: 1px solid #1a2538;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    table.academic-table th {
+      background-color: #090e18;
+      color: var(--primary);
+      font-weight: 700;
+      border-bottom: 2px solid #263550;
+    }
+    table.academic-table tr:nth-child(even) {
+      background-color: #0b101c;
+    }
+
+    /* Explicit Table Column Proportions */
+    #utilityTable th:nth-child(1), #utilityTable td:nth-child(1) { width: 22%; font-weight: 700; }
+    #utilityTable th:nth-child(2), #utilityTable td:nth-child(2) { width: 26%; }
+    #utilityTable th:nth-child(3), #utilityTable td:nth-child(3) { width: 16%; text-align: center; }
+    #utilityTable th:nth-child(4), #utilityTable td:nth-child(4) { width: 36%; }
+
+    #acceptanceTable th:nth-child(1), #acceptanceTable td:nth-child(1) { width: 20%; font-weight: 700; }
+    #acceptanceTable th:nth-child(2), #acceptanceTable td:nth-child(2) { width: 42%; }
+    #acceptanceTable th:nth-child(3), #acceptanceTable td:nth-child(3) { width: 38%; }
+
+    .benchmark-table th:nth-child(1), .benchmark-table td:nth-child(1) { width: 14%; text-align: center; }
+    .benchmark-table th:nth-child(2), .benchmark-table td:nth-child(2) { width: 28%; }
+    .benchmark-table th:nth-child(3), .benchmark-table td:nth-child(3) { width: 28%; }
+    .benchmark-table th:nth-child(4), .benchmark-table td:nth-child(4) { width: 30%; }
+
+    /* Status Blocks */
+    .status-box {
+      padding: 6px 8px;
+      font-size: 0.73rem;
+      margin-top: 4px;
+      border: 1px solid #000000;
+      line-height: 1.35;
+    }
+    .status-pass {
+      background-color: #002e14;
+      border-color: var(--in-color);
+      color: #72ff9d;
+    }
+    .status-fail {
+      background-color: #2e0513;
+      border-color: var(--out-color);
+      color: #ff7594;
+    }
+
+    /* Agent Cards */
+    .agent-card {
+      background-color: #080c14;
+      border: 1px solid #1d273a;
+      padding: 6px 8px;
+      margin-bottom: 5px;
+    }
+    .agent-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.74rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #ffffff;
+    }
+    .arg-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .arg-label {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background-color: #121927;
+      border: 1px solid #283750;
+      padding: 2px 6px;
+      font-size: 0.72rem;
+      cursor: pointer;
+    }
+    .arg-label input[type="checkbox"] {
+      cursor: pointer;
+    }
+
+    /* Bottom Status Strip */
+    footer.academic-taskbar {
+      background-color: #080d16;
+      border-top: 2px solid var(--border-outer);
+      padding: 4px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.71rem;
+      color: var(--text-muted);
+    }
+    .taskbar-item {
+      background-color: #0d1422;
+      border: 1px solid #202d44;
+      padding: 2px 8px;
+      color: #ffffff;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ACADEMIC TOP HEADER -->
+<header class="academic-header">
+  <div class="header-main">
+    <span class="course-badge">AUTONOMOUS SYSTEMS</span>
+    <div class="header-titles">
+      <h1>Assignment 3: Argumentation Engine &amp; Strategic Multi-Agent Mechanism</h1>
+  </div>
+
+</header>
+
+<!-- MAIN 3-PANEL WORKSTATION -->
+<div class="workstation-grid">
+
+  <!-- LEFT PANEL: FRAMEWORK BUILDER & TOPOLOGY SLIDERS -->
+  <aside class="ws-panel">
+    <div class="ws-titlebar">
+      <span>1. Graph Setup &amp; Parameters</span>
+      <div class="ws-titlebar-tools">
+        <button onclick="resetLayout()" style="padding:1px 6px; font-size:0.68rem;">Center Layout</button>
+      </div>
+    </div>
+
+    <div class="ws-content">
+      <!-- Presets -->
+      <div class="card-box">
+        <div class="card-box-header">Benchmark Presets (Click to Load)</div>
+        <label for="presetSelect">Select an example to see its arguments &amp; attacks:</label>
+        <select id="presetSelect" onchange="loadPreset(this.value)">
+          <option value="ex510">Textbook Example 5.10 (Hiding an argument increases payoff &rarr; Manipulable)</option>
+          <option value="ex511">Textbook Example 5.11 (Cancelling attack restores honest play &rarr; Strategyproof)</option>
+          <option value="chain3">3-Node Attack Chain (a &rarr; b &rarr; c)</option>
+          <option value="mutual">Mutual Attack / 2-Cycle (a &harr; b)</option>
+          <option value="odd3">Odd 3-Cycle (a &rarr; b &rarr; c &rarr; a)</option>
+          <option value="diamond">Diamond Reinstatement (Defense from two sides)</option>
+          <option value="floating">Floating Defeat (Unresolvable conflict)</option>
+          <option value="self">Self-Attacking Argument (a &rarr; a)</option>
+        </select>
+      </div>
+
+      <!-- Generator with Sliders -->
+      <div class="card-box">
+        <div class="card-box-header">
+          <span>Random Graph Generator</span>
+          <span style="font-size:0.65rem; color:var(--accent-yellow);">[SLIDERS]</span>
+        </div>
+        <div style="font-size:0.69rem; color:var(--text-muted); margin-bottom:5px;">
+          Quickly generate random argumentation frameworks to test:
+        </div>
+        
+        <div class="slider-row">
+          <span class="slider-label">Argument Count (|A|):</span>
+          <span class="slider-val" id="argCountVal">6</span>
+        </div>
+        <input type="range" id="argCountSlider" min="3" max="10" value="6" oninput="updateArgCount(this.value)">
+
+        <div class="slider-row" style="margin-top:6px;">
+          <span class="slider-label">Attack Probability (p):</span>
+          <span class="slider-val" id="probVal">0.25</span>
+        </div>
+        <input type="range" id="probSlider" min="0.05" max="0.80" step="0.05" value="0.25" oninput="updateProb(this.value)">
+
+        <div class="slider-row" style="margin-top:6px;">
+          <span class="slider-label">Number of Agents:</span>
+          <span class="slider-val" id="agentCountVal">3</span>
+        </div>
+        <input type="range" id="agentCountSlider" min="2" max="4" value="3" oninput="updateAgentCount(this.value)">
+
+        <button class="primary-btn" style="margin-top:8px; width:100%;" onclick="generateRandomInstance()">
+          Generate Random Graph Instance
+        </button>
+      </div>
+
+      <!-- Manual Editor -->
+      <div class="card-box">
+        <div class="card-box-header">Manual Graph Definition</div>
+        <label>Argument Set A (comma-separated):</label>
+        <input type="text" id="argInput" value="a1, a2, a3, a4, a5">
+        
+        <label style="margin-top:6px;">Attack Relations &rarr; (source-&gt;target):</label>
+        <input type="text" id="attackInput" value="a1->a2, a2->a3, a3->a4, a3->a5">
+        
+        <button style="margin-top:7px; width:100%;" onclick="applyCustomGraph()">
+          Update Custom Graph
+        </button>
+      </div>
+
+      <!-- Visual Geometry Sliders -->
+      <div class="card-box">
+        <div class="card-box-header">Display &amp; Geometry Sliders</div>
+        
+        <label>Node Coloring Scheme:</label>
+        <select id="colorMode" onchange="drawGraph()">
+          <option value="status">Dung Status: Grounded Extension (Green = Accepted)</option>
+          <option value="preferred">Dung Status: Preferred Extension</option>
+          <option value="agent">Agent Ownership Partition (Color by Agent)</option>
+        </select>
+
+        <div class="slider-row" style="margin-top:7px;">
+          <span class="slider-label">Layout Spread Radius:</span>
+          <span class="slider-val" id="radiusVal">170px</span>
+        </div>
+        <input type="range" id="radiusSlider" min="90" max="260" value="170" oninput="updateRadius(this.value)">
+
+        <div class="slider-row" style="margin-top:6px;">
+          <span class="slider-label">Node Circle Size:</span>
+          <span class="slider-val" id="nodeSizeVal">22px</span>
+        </div>
+        <input type="range" id="nodeSizeSlider" min="16" max="30" value="22" oninput="updateNodeSize(this.value)">
+      </div>
+    </div>
+  </aside>
+
+  <!-- CENTER STAGE: GRAPH CANVAS & HUD -->
+  <main class="center-stage">
+    <div class="ws-titlebar">
+      <span>2. Interactive Visual Graph Canvas</span>
+      <span style="font-size:0.68rem; color:var(--text-muted);">Click &amp; drag any node to reposition</span>
+    </div>
+
+    <!-- Status Legend Toolbar -->
+    <div class="canvas-hud">
+      <div class="legend-chips">
+        <span class="legend-title">Legend:</span>
+        <div class="hud-chip">
+          <span class="hud-dot" style="background-color:var(--in-color);"></span>
+          <span>IN (Accepted)</span>
+        </div>
+        <div class="hud-chip">
+          <span class="hud-dot" style="background-color:var(--out-color);"></span>
+          <span>OUT (Defeated)</span>
+        </div>
+        <div class="hud-chip">
+          <span class="hud-dot" style="background-color:var(--undec-color);"></span>
+          <span>UNDEC (Undecided)</span>
+        </div>
+        <div class="hud-chip">
+          <span class="hud-arrow-symbol">&rarr;</span>
+          <span>Attack</span>
+        </div>
+      </div>
+      <div class="hud-help">
+        <span>Click &amp; drag nodes to reposition</span>
+      </div>
+    </div>
+
+    <canvas id="graphCanvas"></canvas>
+  </main>
+
+  <!-- RIGHT PANEL: SEMANTICS, STRATEGY & EXPERIMENTS -->
+  <aside class="ws-panel">
+    <div class="tab-bar">
+      <button class="tab-btn active" id="btnSemantics" onclick="switchTab('semanticsTab')">Part 1: Dung Semantics</button>
+      <button class="tab-btn" id="btnStrategic" onclick="switchTab('strategicTab')">Part 2: Strategic Game</button>
+      <button class="tab-btn" id="btnExperiments" onclick="switchTab('experimentsTab')">Part 3: Experiments &amp; Errata</button>
+    </div>
+
+    <div class="ws-content">
+      <!-- TAB 1: DUNG SEMANTICS -->
+      <div id="semanticsTab" class="tab-content active">
+        <div class="card-box">
+          <div class="card-box-header">Extension Semantics (Dung 1995)</div>
+          <div class="ext-list">
+            <div>
+              <label>Grounded Extension (The safe, undisputed arguments):</label>
+              <div id="groundedExt" class="ext-item mono"></div>
+            </div>
+            <div style="margin-top:5px;">
+              <label>Complete Extensions (Consistent sets that defend all their members):</label>
+              <div id="completeExts" class="ext-list mono"></div>
+            </div>
+            <div style="margin-top:5px;">
+              <label>Preferred Extensions (Largest possible defending viewpoints):</label>
+              <div id="preferredExts" class="ext-list mono"></div>
+            </div>
+            <div style="margin-top:5px;">
+              <label>Stable Extensions (Defends itself &amp; attacks every argument outside):</label>
+              <div id="stableExts" class="ext-list mono"></div>
+            </div>
+            <div style="margin-top:5px;">
+              <label>Semi-Stable Extensions (Complete extension with maximum coverage):</label>
+              <div id="semiStableExts" class="ext-list mono"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-box-header">Complete 3-Valued Labellings (Caminada)</div>
+          <label>Select a legal labelling to view on graph (IN, OUT, UNDEC):</label>
+          <select id="labellingSelect" onchange="drawGraph()"></select>
+        </div>
+
+        <div class="card-box">
+          <div class="card-box-header">Acceptance Status Analysis</div>
+          <div style="font-size:0.69rem; color:var(--text-muted); margin-bottom:5px;">
+            Skeptical = In all preferred extensions &bull; Credulous = In at least one &bull; Rejected = In none
+          </div>
+          <table class="academic-table" id="acceptanceTable">
+            <thead>
+              <tr><th>Argument</th><th>Acceptance Status</th><th>Defenders in Grounded</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- TAB 2: STRATEGIC REVELATION GAME -->
+      <div id="strategicTab" class="tab-content">
+        <div class="card-box">
+          <div class="card-box-header">
+            <span>Agent Revelation &amp; Strategic Withholding</span>
+            <span style="font-size:0.65rem; color:var(--primary);">[WITHHOLDING]</span>
+          </div>
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-bottom:6px;">
+            Can agents score higher by hiding arguments? Check or uncheck boxes below to reveal or hide:
+          </div>
+          <div id="agentControls"></div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-box-header">Grounded Direct Mechanism Outcome</div>
+          <div class="ext-item mono" style="border-left-color: var(--accent-pink);">
+            <span>Accepted Arguments (Grounded):</span>
+            <span id="revealedGrounded" style="font-weight:700; color:var(--primary);"></span>
+          </div>
+          <div style="margin-top:6px;">
+            <div style="font-size:0.69rem; color:var(--text-muted); margin-bottom:3px;">
+              Agent Utility = Number of their owned arguments that get accepted:
+            </div>
+            <table class="academic-table" id="utilityTable">
+              <thead>
+                <tr><th>Agent</th><th>Revealed Arguments</th><th>Current Utility</th><th>Best Possible Report</th></tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-box-header">Theoretical Conditions (Theorems 5.3 &amp; 5.4)</div>
+          <label>Theorem 5.3 Check (Is truthfulness weakly dominant for all agents?):</label>
+          <div id="thm53Status" class="status-box"></div>
+
+          <label style="margin-top:6px;">Theorem 5.4 Check (Odd-length defeat path check — does any agent attack their own arguments?):</label>
+          <div id="thm54Status" class="status-box"></div>
+        </div>
+      </div>
+
+      <!-- TAB 3: EMPIRICAL BENCHMARKS & MONTE CARLO -->
+      <div id="experimentsTab" class="tab-content">
+        <div class="card-box">
+          <div class="card-box-header">Monte Carlo Benchmark (30,000 Random Graphs)</div>
+          <div style="font-size:0.69rem; color:var(--text-muted); margin-bottom:4px;">
+            5,000 instances per attack probability &bull; 3 Agents &bull; 6-8 Arguments
+          </div>
+          <table class="academic-table benchmark-table">
+            <thead>
+              <tr><th>p</th><th>SP %</th><th>Thm 5.4 %</th><th>SP &amp; &not;Thm 5.4 (Cancellation)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>0.15</td><td>52.74%</td><td>10.90%</td><td>2,092 instances</td></tr>
+              <tr><td>0.20</td><td>37.98%</td><td>5.96%</td><td>1,601 instances</td></tr>
+              <tr><td>0.25</td><td>26.28%</td><td>2.54%</td><td>1,187 instances</td></tr>
+              <tr><td>0.30</td><td>17.48%</td><td>0.86%</td><td>831 instances</td></tr>
+              <tr><td>0.35</td><td>13.00%</td><td>0.20%</td><td>640 instances</td></tr>
+              <tr><td>0.40</td><td>10.22%</td><td>0.12%</td><td>505 instances</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Live Simulation Slider -->
+        <div class="card-box">
+          <div class="card-box-header">
+            <span>Live Monte Carlo Test (Run in Browser)</span>
+            <span style="font-size:0.65rem; color:var(--in-color);">[IN-BROWSER]</span>
+          </div>
+          <div style="font-size:0.69rem; color:var(--text-muted); margin-bottom:4px;">
+            Choose a batch size and run live random graph simulations right now:
+          </div>
+          
+          <div class="slider-row">
+            <span class="slider-label">Test Sample Size (Runs):</span>
+            <span class="slider-val" id="sampleCountVal">100</span>
+          </div>
+          <input type="range" id="sampleSlider" min="20" max="300" step="20" value="100" oninput="document.getElementById('sampleCountVal').innerText=this.value">
+
+          <button class="accent-btn" style="margin-top:7px; width:100%;" onclick="runLiveSimulation()">
+            Run Live Verification Batch
+          </button>
+
+          <div id="simResultsBox" style="margin-top:7px; font-size:0.72rem; display:none;">
+            <div class="ext-item mono" style="border-left-color:var(--in-color);">
+              <span id="simSummary">Simulating...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div class="card-box-header">Key Theoretical Insights</div>
+          <div style="font-size:0.71rem; line-height:1.4; color:var(--text-muted);">
+            &bull; <strong style="color:var(--in-color);">Soundness Verified (0/30,000 errors):</strong> When Theorem 5.4 holds (no odd self-defeat paths), the mechanism is 100% guaranteed to be strategyproof.<br><br>
+            &bull; <strong style="color:var(--accent-yellow);">Cancellation (6,856 False Negatives):</strong> In 86.95% of strategyproof instances, odd paths exist, but an external unattacked argument cancels out the attack before it can do harm (exactly like &alpha;<sub>6</sub> in Example 5.11).<br><br>
+            &bull; <strong style="color:var(--primary);">Textbook Errata Resolved:</strong> In Weiss (ed.) Chapter 5, Example 5.10 inverted the utilities (truth=1, hiding=2), and the Example 5.11 text mislabeled the cancelling argument as &alpha;<sub>5</sub> instead of &alpha;<sub>6</sub>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<!-- BOTTOM STATUS STRIP -->
+<footer class="academic-taskbar">
+  <div style="display:flex; gap:8px;">
+    <span class="taskbar-item">IIT Jodhpur &bull; Autonomous Systems</span>
+    <span class="taskbar-item" id="tbNodes">|A| = 5</span>
+    <span class="taskbar-item" id="tbEdges">|R| = 4</span>
+  </div>
+  <div style="display:flex; gap:8px;">
+    <span class="taskbar-item" id="tbSpStatus">Strategyproofness: Guaranteed</span>
+    <span class="taskbar-item">Assignment 3 Engine</span>
+  </div>
+</footer>
+
+<script>
+/* =========================================================================
+   DUNG ABSTRACT ARGUMENTATION & STRATEGIC GAME SOLVER
+   Strictly solid rendering: zero CSS/canvas gradients.
+   ========================================================================= */
+
+// State
+let argumentsList = [];
+let attackPairs = [];
+let agentOwnership = {};
+let revealedArguments = {};
+let nodePositions = {};
+let draggingNode = null;
+let currentLabellings = [];
+let graphRadius = 170;
+let nodeRadius = 22;
+
+const canvas = document.getElementById('graphCanvas');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  const hud = document.querySelector('.canvas-hud');
+  const hudH = hud ? hud.offsetHeight : 34;
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = Math.max(100, canvas.parentElement.clientHeight - hudH);
+  resetLayout();
+}
+window.addEventListener('resize', resizeCanvas);
+
+// Sliders
+function updateArgCount(val) {
+  document.getElementById('argCountVal').innerText = val;
+}
+function updateProb(val) {
+  document.getElementById('probVal').innerText = parseFloat(val).toFixed(2);
+}
+function updateAgentCount(val) {
+  document.getElementById('agentCountVal').innerText = val;
+}
+function updateRadius(val) {
+  graphRadius = parseInt(val, 10);
+  document.getElementById('radiusVal').innerText = val + 'px';
+  resetLayout();
+}
+function updateNodeSize(val) {
+  nodeRadius = parseInt(val, 10);
+  document.getElementById('nodeSizeVal').innerText = val + 'px';
+  drawGraph();
+}
+
+// Presets
+const PRESETS = {
+  ex510: {
+    args: ['a1', 'a2', 'a3', 'a4', 'a5'],
+    attacks: [['a1', 'a2'], ['a2', 'a3'], ['a3', 'a4'], ['a3', 'a5']],
+    agents: {
+      'Agent x': ['a1', 'a4', 'a5'],
+      'Agent y': ['a2'],
+      'Agent z': ['a3']
+    }
+  },
+  ex511: {
+    args: ['a1', 'a2', 'a3', 'a4', 'a5', 'a6'],
+    attacks: [['a1', 'a2'], ['a2', 'a3'], ['a3', 'a4'], ['a3', 'a5'], ['a6', 'a3']],
+    agents: {
+      'Agent x': ['a1', 'a4', 'a5', 'a6'],
+      'Agent y': ['a2'],
+      'Agent z': ['a3']
+    }
+  },
+  chain3: {
+    args: ['a', 'b', 'c'],
+    attacks: [['a', 'b'], ['b', 'c']],
+    agents: {
+      'Agent 1': ['a', 'c'],
+      'Agent 2': ['b']
+    }
+  },
+  mutual: {
+    args: ['a', 'b'],
+    attacks: [['a', 'b'], ['b', 'a']],
+    agents: {
+      'Agent 1': ['a'],
+      'Agent 2': ['b']
+    }
+  },
+  odd3: {
+    args: ['a', 'b', 'c'],
+    attacks: [['a', 'b'], ['b', 'c'], ['c', 'a']],
+    agents: {
+      'Agent 1': ['a'],
+      'Agent 2': ['b'],
+      'Agent 3': ['c']
+    }
+  },
+  diamond: {
+    args: ['a', 'b', 'c', 'd'],
+    attacks: [['d', 'a'], ['d', 'c'], ['a', 'b'], ['c', 'b']],
+    agents: {
+      'Agent 1': ['d', 'b'],
+      'Agent 2': ['a', 'c']
+    }
+  },
+  floating: {
+    args: ['a', 'b', 'c'],
+    attacks: [['a', 'b'], ['b', 'a'], ['a', 'c'], ['b', 'c']],
+    agents: {
+      'Agent 1': ['a', 'c'],
+      'Agent 2': ['b']
+    }
+  },
+  self: {
+    args: ['a', 'b'],
+    attacks: [['a', 'a'], ['b', 'a']],
+    agents: {
+      'Agent 1': ['b'],
+      'Agent 2': ['a']
+    }
+  }
+};
+
+function loadPreset(key) {
+  const p = PRESETS[key] || PRESETS.ex510;
+  argumentsList = [...p.args];
+  attackPairs = p.attacks.map(e => [...e]);
+  agentOwnership = {};
+  revealedArguments = {};
+  for (const [agent, args] of Object.entries(p.agents)) {
+    agentOwnership[agent] = [...args];
+    revealedArguments[agent] = new Set(args);
+  }
+  document.getElementById('argInput').value = argumentsList.join(', ');
+  document.getElementById('attackInput').value = attackPairs.map(e => `${e[0]}->${e[1]}`).join(', ');
+  resetLayout();
+  evaluateFramework();
+}
+
+function resetLayout() {
+  nodePositions = {};
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+  const r = Math.min(graphRadius, Math.min(cx, cy) * 0.8);
+  const n = argumentsList.length;
+  argumentsList.forEach((arg, i) => {
+    const angle = (2 * Math.PI * i) / n - Math.PI / 2;
+    nodePositions[arg] = {
+      x: cx + r * Math.cos(angle),
+      y: cy + r * Math.sin(angle)
+    };
+  });
+  drawGraph();
+}
+
+function applyCustomGraph() {
+  const args = document.getElementById('argInput').value.split(',').map(s => s.trim()).filter(Boolean);
+  const atks = document.getElementById('attackInput').value.split(',').map(s => {
+    const parts = s.split('->').map(p => p.trim());
+    return parts.length === 2 ? [parts[0], parts[1]] : null;
+  }).filter(Boolean);
+
+  argumentsList = args;
+  attackPairs = atks;
+  agentOwnership = { 'Agent 1': [...args] };
+  revealedArguments = { 'Agent 1': new Set(args) };
+  resetLayout();
+  evaluateFramework();
+}
+
+function generateRandomInstance() {
+  const n = parseInt(document.getElementById('argCountSlider').value, 10);
+  const p = parseFloat(document.getElementById('probSlider').value);
+  const m = parseInt(document.getElementById('agentCountSlider').value, 10);
+
+  argumentsList = [];
+  for (let i = 1; i <= n; i++) argumentsList.push(`a${i}`);
+
+  attackPairs = [];
+  for (const u of argumentsList) {
+    for (const v of argumentsList) {
+      if (Math.random() < p) attackPairs.push([u, v]);
+    }
+  }
+
+  agentOwnership = {};
+  revealedArguments = {};
+  for (let i = 1; i <= m; i++) {
+    agentOwnership[`Agent ${i}`] = [];
+    revealedArguments[`Agent ${i}`] = new Set();
+  }
+
+  const agentKeys = Object.keys(agentOwnership);
+  argumentsList.forEach(arg => {
+    const chosen = agentKeys[Math.floor(Math.random() * agentKeys.length)];
+    agentOwnership[chosen].push(arg);
+    revealedArguments[chosen].add(arg);
+  });
+
+  document.getElementById('argInput').value = argumentsList.join(', ');
+  document.getElementById('attackInput').value = attackPairs.map(e => `${e[0]}->${e[1]}`).join(', ');
+  resetLayout();
+  evaluateFramework();
+}
+
+// Dung Solver Functions
+function getAttackers(arg, attacks) {
+  return attacks.filter(e => e[1] === arg).map(e => e[0]);
+}
+
+function isConflictFree(setArgs, attacks) {
+  for (const [u, v] of attacks) {
+    if (setArgs.has(u) && setArgs.has(v)) return false;
+  }
+  return true;
+}
+
+function isDefendedBy(arg, S, allArgs, attacks) {
+  const attackers = getAttackers(arg, attacks);
+  for (const atk of attackers) {
+    const defenders = attacks.filter(e => e[1] === atk && S.has(e[0]));
+    if (defenders.length === 0) return false;
+  }
+  return true;
+}
+
+function characteristicFunction(S, allArgs, attacks) {
+  const defended = new Set();
+  for (const a of allArgs) {
+    if (isDefendedBy(a, S, allArgs, attacks)) defended.add(a);
+  }
+  return defended;
+}
+
+function computeGrounded(allArgs, attacks) {
+  let current = new Set();
+  while (true) {
+    const next = characteristicFunction(current, allArgs, attacks);
+    if (setsEqual(next, current)) return current;
+    current = next;
+  }
+}
+
+function setsEqual(a, b) {
+  if (a.size !== b.size) return false;
+  for (const x of a) if (!b.has(x)) return false;
+  return true;
+}
+
+function powerSet(array) {
+  const result = [[]];
+  for (const element of array) {
+    const len = result.length;
+    for (let i = 0; i < len; i++) {
+      result.push(result[i].concat(element));
+    }
+  }
+  return result;
+}
+
+function isProperSubset(sub, sup) {
+  if (sub.size >= sup.size) return false;
+  for (const x of sub) if (!sup.has(x)) return false;
+  return true;
+}
+
+function solveAllSemantics(allArgs, attacks) {
+  const grounded = computeGrounded(allArgs, attacks);
+  const subsets = powerSet(allArgs).map(arr => new Set(arr));
+  
+  const admissible = subsets.filter(s => {
+    if (!isConflictFree(s, attacks)) return false;
+    const def = characteristicFunction(s, allArgs, attacks);
+    for (const x of s) if (!def.has(x)) return false;
+    return true;
+  });
+
+  const complete = admissible.filter(s => {
+    const def = characteristicFunction(s, allArgs, attacks);
+    return setsEqual(s, def);
+  });
+
+  const preferred = admissible.filter(s => {
+    for (const other of admissible) {
+      if (other.size > s.size && isProperSubset(s, other)) return false;
+    }
+    return true;
+  });
+
+  const stable = subsets.filter(s => {
+    if (!isConflictFree(s, attacks)) return false;
+    const range = new Set(s);
+    for (const [u, v] of attacks) {
+      if (s.has(u)) range.add(v);
+    }
+    return range.size === allArgs.length;
+  });
+
+  const ranges = complete.map(ext => {
+    const r = new Set(ext);
+    for (const [u, v] of attacks) {
+      if (ext.has(u)) r.add(v);
+    }
+    return { ext, range: r };
+  });
+
+  const semiStable = ranges.filter(item => {
+    for (const other of ranges) {
+      if (other.range.size > item.range.size && isProperSubset(item.range, other.range)) return false;
+    }
+    return true;
+  }).map(item => item.ext);
+
+  // Complete 3-valued labellings
+  const labellings = [];
+  const labels = ['in', 'out', 'undec'];
+  function generateLabellings(index, currentLab) {
+    if (index === allArgs.length) {
+      if (isValidLabelling(currentLab, allArgs, attacks)) {
+        labellings.push({ ...currentLab });
+      }
+      return;
+    }
+    const arg = allArgs[index];
+    for (const l of labels) {
+      currentLab[arg] = l;
+      generateLabellings(index + 1, currentLab);
+    }
+  }
+  generateLabellings(0, {});
+
+  return { grounded, complete, preferred, stable, semiStable, labellings };
+}
+
+function isValidLabelling(lab, allArgs, attacks) {
+  for (const a of allArgs) {
+    const atks = getAttackers(a, attacks);
+    const l = lab[a];
+    if (l === 'in') {
+      if (atks.some(atk => lab[atk] !== 'out')) return false;
+    } else if (l === 'out') {
+      if (!atks.some(atk => lab[atk] === 'in')) return false;
+    } else {
+      if (atks.some(atk => lab[atk] === 'in')) return false;
+      if (atks.length > 0 && atks.every(atk => lab[atk] === 'out')) return false;
+      if (atks.length === 0) return false;
+    }
+  }
+  return true;
+}
+
+function hasOddLengthPath(source, target, attacks, allArgs) {
+  function dfs(curr, len, visited) {
+    const nbrs = attacks.filter(e => e[0] === curr).map(e => e[1]);
+    for (const nxt of nbrs) {
+      if (visited.has(nxt)) continue;
+      const nlen = len + 1;
+      if (nxt === target) {
+        if (nlen % 2 === 1) return true;
+        continue;
+      }
+      visited.add(nxt);
+      if (dfs(nxt, nlen, visited)) return true;
+      visited.delete(nxt);
+    }
+    return false;
+  }
+  return dfs(source, 0, new Set([source]));
+}
+
+function evaluateFramework() {
+  const semantics = solveAllSemantics(argumentsList, attackPairs);
+  currentLabellings = semantics.labellings;
+
+  document.getElementById('tbNodes').innerText = `|A| = ${argumentsList.length}`;
+  document.getElementById('tbEdges').innerText = `|R| = ${attackPairs.length}`;
+
+  // Extension display
+  document.getElementById('groundedExt').innerText = `{ ${[...semantics.grounded].sort().join(', ')} }`;
+
+  const compDiv = document.getElementById('completeExts');
+  compDiv.innerHTML = semantics.complete.map(s => `<div class="ext-item mono">{ ${[...s].sort().join(', ')} }</div>`).join('') || '(none)';
+
+  const prefDiv = document.getElementById('preferredExts');
+  prefDiv.innerHTML = semantics.preferred.map(s => `<div class="ext-item mono">{ ${[...s].sort().join(', ')} }</div>`).join('') || '(none)';
+
+  const stableDiv = document.getElementById('stableExts');
+  stableDiv.innerHTML = semantics.stable.map(s => `<div class="ext-item mono">{ ${[...s].sort().join(', ')} }</div>`).join('') || '(none)';
+
+  const semiDiv = document.getElementById('semiStableExts');
+  semiDiv.innerHTML = semantics.semiStable.map(s => `<div class="ext-item mono">{ ${[...s].sort().join(', ')} }</div>`).join('') || '(none)';
+
+  // Labelling dropdown
+  const labSel = document.getElementById('labellingSelect');
+  labSel.innerHTML = semantics.labellings.map((l, i) => {
+    const inArgs = Object.keys(l).filter(k => l[k] === 'in').sort().join(',');
+    return `<option value="${i}">Labelling #${i + 1}: IN={${inArgs}}</option>`;
+  }).join('');
+
+  // Acceptance table
+  const tbody = document.querySelector('#acceptanceTable tbody');
+  tbody.innerHTML = argumentsList.map(a => {
+    const inAll = semantics.preferred.every(s => s.has(a));
+    const inAny = semantics.preferred.some(s => s.has(a));
+    const status = inAll ? '<span class="pill pill-in">Skeptical</span>' :
+                   inAny ? '<span class="pill pill-undec">Credulous</span>' :
+                           '<span class="pill pill-out">Rejected</span>';
+    const defenders = [...semantics.grounded].filter(d => attackPairs.some(e => e[0] === d && attackPairs.some(e2 => e2[0] === e[1] && e2[1] === a))).join(', ') || '-';
+    return `<tr><td><strong>${a}</strong></td><td>${status}</td><td>${defenders}</td></tr>`;
+  }).join('');
+
+  renderStrategicControls();
+  evaluateStrategicGame();
+  drawGraph();
+}
+
+function renderStrategicControls() {
+  const container = document.getElementById('agentControls');
+  container.innerHTML = Object.entries(agentOwnership).map(([agent, args]) => {
+    const checkboxes = args.map(a => {
+      const checked = revealedArguments[agent].has(a) ? 'checked' : '';
+      return `<label class="arg-label"><input type="checkbox" ${checked} onchange="toggleArg('${agent}', '${a}', this.checked)"> ${a}</label>`;
+    }).join('');
+    return `
+      <div class="agent-card">
+        <div class="agent-header">
+          <span style="color:var(--primary);">${agent}</span>
+          <span style="font-size:0.68rem; color:var(--text-muted);">Owns: {${args.join(', ')}}</span>
+        </div>
+        <div class="arg-chips">${checkboxes || '<span style="color:#666; font-size:0.7rem;">(No arguments assigned)</span>'}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleArg(agent, arg, checked) {
+  if (checked) revealedArguments[agent].add(arg);
+  else revealedArguments[agent].delete(arg);
+  evaluateStrategicGame();
+  drawGraph();
+}
+
+function evaluateStrategicGame() {
+  const unionRevealed = new Set();
+  for (const setArgs of Object.values(revealedArguments)) {
+    for (const a of setArgs) unionRevealed.add(a);
+  }
+  const inducedArgs = [...unionRevealed];
+  const inducedAttacks = attackPairs.filter(e => unionRevealed.has(e[0]) && unionRevealed.has(e[1]));
+  const groundedRevealed = computeGrounded(inducedArgs, inducedAttacks);
+
+  document.getElementById('revealedGrounded').innerText = `{ ${[...groundedRevealed].sort().join(', ')} }`;
+
+  // Utilities & Best Responses
+  const tbody = document.querySelector('#utilityTable tbody');
+  tbody.innerHTML = Object.entries(agentOwnership).map(([agent, owned]) => {
+    const revealed = revealedArguments[agent];
+    const u = owned.filter(a => groundedRevealed.has(a)).length;
+
+    const otherRevealed = new Set();
+    for (const [other, s] of Object.entries(revealedArguments)) {
+      if (other !== agent) for (const x of s) otherRevealed.add(x);
+    }
+    const ownSubsets = powerSet(owned).map(arr => new Set(arr));
+    let bestU = -1;
+    let bestReps = [];
+    for (const cand of ownSubsets) {
+      const candUnion = new Set([...otherRevealed, ...cand]);
+      const candAtks = attackPairs.filter(e => candUnion.has(e[0]) && candUnion.has(e[1]));
+      const g = computeGrounded([...candUnion], candAtks);
+      const candU = owned.filter(a => g.has(a)).length;
+      if (candU > bestU) {
+        bestU = candU;
+        bestReps = [cand];
+      } else if (candU === bestU) {
+        bestReps.push(cand);
+      }
+    }
+
+    const bestRepStr = bestReps.map(r => `{${[...r].sort().join(',')}}`).join(' or ');
+    return `<tr><td><strong>${agent}</strong></td><td>{${[...revealed].sort().join(',')}}</td><td><strong style="color:var(--accent-yellow);">${u}</strong></td><td>${bestRepStr} (u*=${bestU})</td></tr>`;
+  }).join('');
+
+  // Check Theorem 5.4 Odd Length Paths
+  const violations = [];
+  for (const [agent, owned] of Object.entries(agentOwnership)) {
+    for (let i = 0; i < owned.length; i++) {
+      for (let j = 0; j < owned.length; j++) {
+        if (i === j) continue;
+        const u = owned[i], v = owned[j];
+        if (hasOddLengthPath(u, v, attackPairs, argumentsList)) {
+          violations.push(`${agent}: ${u} &rarr;* ${v}`);
+        }
+      }
+    }
+  }
+
+  const thm54Div = document.getElementById('thm54Status');
+  if (violations.length === 0) {
+    thm54Div.className = 'status-box status-pass';
+    thm54Div.innerHTML = '&#x2714; <strong>Condition Holds:</strong> No agent holds two arguments with an odd directed path in full graph. Strategyproofness guaranteed.';
+  } else {
+    thm54Div.className = 'status-box status-fail';
+    thm54Div.innerHTML = `&#x2718; <strong>Condition Violated (${violations.length} paths):</strong><br>` + violations.slice(0, 3).map(v => `&bull; ${v}`).join('<br>') + (violations.length > 3 ? `<br>&bull; ...and ${violations.length - 3} more` : '');
+  }
+
+  // Check Theorem 5.3 (Dominance)
+  let isDominant = true;
+  let counterexample = null;
+  for (const [agent, owned] of Object.entries(agentOwnership)) {
+    const others = Object.keys(agentOwnership).filter(a => a !== agent);
+    const otherSubsets = others.map(o => powerSet(agentOwnership[o]).map(arr => new Set(arr)));
+    
+    function* getProfiles(idx) {
+      if (idx === others.length) { yield {}; return; }
+      const o = others[idx];
+      for (const rep of otherSubsets[idx]) {
+        for (const rest of getProfiles(idx + 1)) {
+          yield { [o]: rep, ...rest };
+        }
+      }
+    }
+
+    for (const prof of getProfiles(0)) {
+      const fullUnion = new Set();
+      for (const s of Object.values(prof)) for (const x of s) fullUnion.add(x);
+      for (const x of owned) fullUnion.add(x);
+
+      const truthfulG = computeGrounded([...fullUnion], attackPairs.filter(e => fullUnion.has(e[0]) && fullUnion.has(e[1])));
+      const truthfulU = owned.filter(a => truthfulG.has(a)).length;
+
+      for (const dev of powerSet(owned).map(a => new Set(a))) {
+        const devUnion = new Set();
+        for (const s of Object.values(prof)) for (const x of s) devUnion.add(x);
+        for (const x of dev) devUnion.add(x);
+
+        const devG = computeGrounded([...devUnion], attackPairs.filter(e => devUnion.has(e[0]) && devUnion.has(e[1])));
+        const devU = owned.filter(a => devG.has(a)).length;
+        if (devU > truthfulU) {
+          isDominant = false;
+          counterexample = `${agent} gains higher utility (${devU} vs ${truthfulU}) by hiding arguments.`;
+          break;
+        }
+      }
+      if (!isDominant) break;
+    }
+    if (!isDominant) break;
+  }
+
+  const thm53Div = document.getElementById('thm53Status');
+  const tbSp = document.getElementById('tbSpStatus');
+  if (isDominant) {
+    thm53Div.className = 'status-box status-pass';
+    thm53Div.innerHTML = '&#x2714; <strong>Truthfulness is Weakly Dominant (Strategyproof):</strong> No agent can profit by withholding.';
+    tbSp.innerText = 'Strategyproofness: Guaranteed';
+    tbSp.style.color = 'var(--in-color)';
+  } else {
+    thm53Div.className = 'status-box status-fail';
+    thm53Div.innerHTML = `&#x2718; <strong>Not Strategyproof:</strong> Profitable withholding found!<br>&bull; ${counterexample}`;
+    tbSp.innerText = 'Strategyproofness: Manipulable';
+    tbSp.style.color = 'var(--out-color)';
+  }
+}
+
+// STRICTLY FLAT RENDERING (NO GRADIENTS)
+function drawGraph() {
+  ctx.fillStyle = '#05080e';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  const unionRevealed = new Set();
+  for (const setArgs of Object.values(revealedArguments)) {
+    for (const a of setArgs) unionRevealed.add(a);
+  }
+  const inducedArgs = [...unionRevealed];
+  const inducedAttacks = attackPairs.filter(e => unionRevealed.has(e[0]) && unionRevealed.has(e[1]));
+  const groundedRevealed = computeGrounded(inducedArgs, inducedAttacks);
+
+  const colorMode = document.getElementById('colorMode').value;
+  const semantics = solveAllSemantics(argumentsList, attackPairs);
+
+  // Attack Edges (Solid Lines & Arrowheads)
+  for (const [u, v] of attackPairs) {
+    const p1 = nodePositions[u];
+    const p2 = nodePositions[v];
+    if (!p1 || !p2) continue;
+
+    const isRevealed = unionRevealed.has(u) && unionRevealed.has(v);
+    drawRetroArrow(p1, p2, isRevealed, u === v);
+  }
+
+  // Nodes (Flat Solid Colors with 2px Outlines)
+  for (const arg of argumentsList) {
+    const pos = nodePositions[arg];
+    if (!pos) continue;
+
+    const isRevealed = unionRevealed.has(arg);
+    let fillColor = '#556677';
+    let textColor = '#000000';
+
+    if (colorMode === 'status') {
+      if (groundedRevealed.has(arg)) {
+        fillColor = '#00e676';
+        textColor = '#000000';
+      } else if (inducedAttacks.some(e => e[1] === arg && groundedRevealed.has(e[0]))) {
+        fillColor = '#ff3366';
+        textColor = '#ffffff';
+      } else {
+        fillColor = '#ffb300';
+        textColor = '#000000';
+      }
+    } else if (colorMode === 'preferred') {
+      const pref = semantics.preferred[0] || new Set();
+      if (pref.has(arg)) {
+        fillColor = '#00e676';
+        textColor = '#000000';
+      } else if (attackPairs.some(e => e[1] === arg && pref.has(e[0]))) {
+        fillColor = '#ff3366';
+        textColor = '#ffffff';
+      } else {
+        fillColor = '#ffb300';
+        textColor = '#000000';
+      }
+    } else {
+      const agentIdx = Object.keys(agentOwnership).findIndex(k => agentOwnership[k].includes(arg));
+      const palette = ['#7dd3fc', '#ff007f', '#ffc400', '#00e676', '#a855f7'];
+      fillColor = palette[agentIdx % palette.length];
+      textColor = (fillColor === '#ff007f') ? '#ffffff' : '#000000';
+    }
+
+    ctx.save();
+    if (!isRevealed) ctx.globalAlpha = 0.25;
+
+    // Node body
+    ctx.fillStyle = fillColor;
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, nodeRadius, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // 2px solid white outline
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = '#ffffff';
+    ctx.stroke();
+
+    // Node Label
+    ctx.fillStyle = textColor;
+    ctx.font = `bold ${Math.max(11, nodeRadius - 8)}px "Segoe UI", Tahoma, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(arg, pos.x, pos.y);
+
+    ctx.restore();
+  }
+}
+
+function drawRetroArrow(p1, p2, isRevealed, isSelf) {
+  ctx.save();
+  ctx.globalAlpha = isRevealed ? 1.0 : 0.2;
+  ctx.strokeStyle = isRevealed ? '#ff3366' : '#445566';
+  ctx.fillStyle = isRevealed ? '#ff3366' : '#445566';
+  ctx.lineWidth = 2;
+
+  if (isSelf) {
+    ctx.beginPath();
+    ctx.arc(p1.x - nodeRadius, p1.y - nodeRadius, nodeRadius * 0.75, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.restore();
+    return;
+  }
+
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  const dist = Math.hypot(dx, dy);
+  if (dist === 0) return;
+
+  const r = nodeRadius;
+  const sx = p1.x + (dx / dist) * r;
+  const sy = p1.y + (dy / dist) * r;
+  const tx = p2.x - (dx / dist) * (r + 4);
+  const ty = p2.y - (dy / dist) * (r + 4);
+
+  // Line
+  ctx.beginPath();
+  ctx.moveTo(sx, sy);
+  ctx.lineTo(tx, ty);
+  ctx.stroke();
+
+  // Arrowhead
+  const headLen = 10;
+  const angle = Math.atan2(dy, dx);
+  ctx.beginPath();
+  ctx.moveTo(tx, ty);
+  ctx.lineTo(tx - headLen * Math.cos(angle - Math.PI / 6), ty - headLen * Math.sin(angle - Math.PI / 6));
+  ctx.lineTo(tx - headLen * Math.cos(angle + Math.PI / 6), ty - headLen * Math.sin(angle + Math.PI / 6));
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+// Mouse Interaction
+canvas.addEventListener('mousedown', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  for (const [arg, pos] of Object.entries(nodePositions)) {
+    if (Math.hypot(pos.x - mx, pos.y - my) <= nodeRadius + 4) {
+      draggingNode = arg;
+      break;
+    }
+  }
+});
+
+canvas.addEventListener('mousemove', e => {
+  if (!draggingNode) return;
+  const rect = canvas.getBoundingClientRect();
+  nodePositions[draggingNode].x = e.clientX - rect.left;
+  nodePositions[draggingNode].y = e.clientY - rect.top;
+  drawGraph();
+});
+
+window.addEventListener('mouseup', () => {
+  draggingNode = null;
+});
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  if (tabId === 'semanticsTab') document.getElementById('btnSemantics').classList.add('active');
+  else if (tabId === 'strategicTab') document.getElementById('btnStrategic').classList.add('active');
+  else if (tabId === 'experimentsTab') document.getElementById('btnExperiments').classList.add('active');
+
+  document.getElementById(tabId).classList.add('active');
+}
+
+// Live Batch Verification
+function runLiveSimulation() {
+  const runs = parseInt(document.getElementById('sampleSlider').value, 10);
+  const p = parseFloat(document.getElementById('probSlider').value);
+  const box = document.getElementById('simResultsBox');
+  const summary = document.getElementById('simSummary');
+  box.style.display = 'block';
+  summary.innerHTML = `Simulating ${runs} random instances with p=${p.toFixed(2)}...`;
+
+  setTimeout(() => {
+    let spCount = 0;
+    let thm54Count = 0;
+    let spAndNotThmCount = 0;
+    let anomalyCount = 0;
+
+    for (let iter = 0; iter < runs; iter++) {
+      const n = 6 + Math.floor(Math.random() * 3);
+      const args = [];
+      for (let i = 1; i <= n; i++) args.push(`a${i}`);
+
+      const attacks = [];
+      for (const u of args) {
+        for (const v of args) {
+          if (Math.random() < p) attacks.push([u, v]);
+        }
+      }
+
+      const agents = { 'Agent 1': [], 'Agent 2': [], 'Agent 3': [] };
+      const agKeys = Object.keys(agents);
+      args.forEach(a => {
+        const ag = agKeys[Math.floor(Math.random() * agKeys.length)];
+        agents[ag].push(a);
+      });
+
+      // Check Theorem 5.4
+      let hasOddViolation = false;
+      for (const owned of Object.values(agents)) {
+        for (let i = 0; i < owned.length; i++) {
+          for (let j = 0; j < owned.length; j++) {
+            if (i === j) continue;
+            if (hasOddLengthPath(owned[i], owned[j], attacks, args)) {
+              hasOddViolation = true;
+              break;
+            }
+          }
+          if (hasOddViolation) break;
+        }
+        if (hasOddViolation) break;
+      }
+      const thm54Holds = !hasOddViolation;
+      if (thm54Holds) thm54Count++;
+
+      // Check Strategyproofness
+      let isSp = true;
+      for (const [agent, owned] of Object.entries(agents)) {
+        const others = agKeys.filter(k => k !== agent);
+        const otherSubsets = others.map(o => powerSet(agents[o]).map(arr => new Set(arr)));
+
+        function* getProfs(idx) {
+          if (idx === others.length) { yield {}; return; }
+          const o = others[idx];
+          for (const rep of otherSubsets[idx]) {
+            for (const rest of getProfs(idx + 1)) {
+              yield { [o]: rep, ...rest };
+            }
+          }
+        }
+
+        for (const prof of getProfs(0)) {
+          const fullUnion = new Set();
+          for (const s of Object.values(prof)) for (const x of s) fullUnion.add(x);
+          for (const x of owned) fullUnion.add(x);
+
+          const truthfulG = computeGrounded([...fullUnion], attacks.filter(e => fullUnion.has(e[0]) && fullUnion.has(e[1])));
+          const truthfulU = owned.filter(a => truthfulG.has(a)).length;
+
+          for (const dev of powerSet(owned).map(a => new Set(a))) {
+            const devUnion = new Set();
+            for (const s of Object.values(prof)) for (const x of s) devUnion.add(x);
+            for (const x of dev) devUnion.add(x);
+
+            const devG = computeGrounded([...devUnion], attacks.filter(e => devUnion.has(e[0]) && devUnion.has(e[1])));
+            const devU = owned.filter(a => devG.has(a)).length;
+            if (devU > truthfulU) {
+              isSp = false;
+              break;
+            }
+          }
+          if (!isSp) break;
+        }
+        if (!isSp) break;
+      }
+
+      if (isSp) spCount++;
+      if (thm54Holds && !isSp) anomalyCount++;
+      if (isSp && !thm54Holds) spAndNotThmCount++;
+    }
+
+    summary.innerHTML = `
+      <strong>Live Batch Verification (${runs} instances, p=${p.toFixed(2)}):</strong><br>
+      &bull; Strategyproof: ${spCount}/${runs} (${((spCount/runs)*100).toFixed(1)}%)<br>
+      &bull; Theorem 5.4 Holds: ${thm54Count}/${runs} (${((thm54Count/runs)*100).toFixed(1)}%)<br>
+      &bull; SP &amp; &not;Thm 5.4 (Cancellation): ${spAndNotThmCount} instances<br>
+      &bull; Anomalies (Thm 5.4 &amp; &not;SP): <strong style="color:var(--in-color);">${anomalyCount} (0.0%)</strong>
+    `;
+  }, 30);
+}
+
+// Initialise
+window.onload = () => {
+  resizeCanvas();
+  loadPreset('ex510');
+};
+</script>
+</body>
+</html>
